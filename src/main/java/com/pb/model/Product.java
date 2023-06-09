@@ -22,8 +22,6 @@ public class Product {
     private String name;
     private String description;
     private double price;
-
     @ManyToMany(mappedBy = "products")
     private Set<Order> orders = new HashSet<>();
-
 }

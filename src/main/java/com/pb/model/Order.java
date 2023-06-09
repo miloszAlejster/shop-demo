@@ -19,10 +19,8 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @ManyToOne(cascade = {CascadeType.ALL})
     private User user;
-
     @ManyToMany(cascade = {CascadeType.ALL})
     private List<Product> products = new ArrayList<>();
 }
