@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class Order {
+public class OrderDto {
     private Long id;
     private User user;
     private List<Product> products;

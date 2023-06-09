@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class User {
+public class UserDto {
     private Long id;
     private String firstname;
     private String lastname;

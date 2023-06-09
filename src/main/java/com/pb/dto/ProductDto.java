@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Data
 @Builder
-public class Product {
+public class ProductDto {
     private Long id;
     private String name;
     private String description;
