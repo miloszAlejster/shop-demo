@@ -33,8 +33,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(UserDto userDto) {
-        userRepository.deleteById(userDto.getId());
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 
     @Override
@@ -89,6 +89,7 @@ public class UserServiceImpl implements UserService {
                 .build();
         return userDto;
     }
+
     private User maptoUser(UserDto userDto) {
         User user = User.builder()
                 .id(userDto.getId())
