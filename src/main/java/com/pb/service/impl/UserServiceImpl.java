@@ -78,6 +78,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    public boolean checkEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     private UserDto mapToUserDto(User user) {
         UserDto userDto = UserDto.builder()
                 .id(user.getId())
@@ -101,4 +106,6 @@ public class UserServiceImpl implements UserService {
                 .build();
         return user;
     }
+
+
 }

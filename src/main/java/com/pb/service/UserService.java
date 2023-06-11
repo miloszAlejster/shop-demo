@@ -15,4 +15,5 @@ public interface UserService {
     void updateUserLastName(Long id, String newLastName);
     void updateUserEmail(Long id, String newEmail);
     void updateUserPassword(Long id, String newPassword);
+    boolean checkEmail(String email);
 }
