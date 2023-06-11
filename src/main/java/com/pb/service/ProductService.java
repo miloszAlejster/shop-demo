@@ -1,40 +1,20 @@
 package com.pb.service;
 
-import com.pb.model.Product;
-import com.pb.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.pb.dto.ProductDto;
+import com.pb.dto.UserDto;
+import com.pb.model.Order;
 
 import java.util.List;
+import java.util.Set;
 
-@Service
-public class ProductService {
-    private final ProductRepository productRepository;
-
-    @Autowired
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
-
-    public Product createProduct(Product product) {
-        return productRepository.save(product);
-    }
-
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-
-    public Product getProductById(Long id) {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + id));
-    }
-
-    public Product updateProduct(Product product) {
-        return productRepository.save(product);
-    }
-
-    public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
-    }
-
+public interface ProductService {
+    List<ProductDto> findAllUsers();
+    void createProduct(ProductDto productDto);
+    void deleteProduct(Long id);
+    ProductDto getProductById(Long id);
+    void updateProduct(ProductDto productDto);
+    void updateProductName(Long id, String newName);
+    void updateProductDescription(Long id, String newDescription);
+    void updateUserPrice(Long id, Double newPrice);
+    void updateUserOrders(Long id, Set<Order> newOrders);
 }

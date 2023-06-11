@@ -2,6 +2,7 @@ package com.pb.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "users")
 public class User {
     @Id
@@ -21,7 +23,6 @@ public class User {
     private String lastname;
     private String email;
     private String password;
-
     @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
 

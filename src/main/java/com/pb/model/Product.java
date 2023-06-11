@@ -2,6 +2,7 @@ package com.pb.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "products")
 public class Product {
     @Id
@@ -20,8 +22,6 @@ public class Product {
     private String name;
     private String description;
     private double price;
-
     @ManyToMany(mappedBy = "products")
     private Set<Order> orders = new HashSet<>();
-
 }
