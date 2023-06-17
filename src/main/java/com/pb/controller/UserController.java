@@ -28,6 +28,7 @@ public class UserController {
     @PostMapping("/add")
     @ResponseBody
     UserDto newUser(@RequestBody User newUser) {
+
         return service.createUser(newUser);
     }
     @GetMapping("/get")

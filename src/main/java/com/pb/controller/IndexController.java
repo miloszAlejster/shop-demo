@@ -1,6 +1,7 @@
 package com.pb.controller;
 
 import com.pb.dto.UserDto;
+import com.pb.model.User;
 import com.pb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,5 +24,14 @@ public class IndexController {
         model.addAttribute("title", "Shop");
         model.addAttribute("users", users);
         return "home";
+    }
+    @GetMapping("/register")
+    String register(Model model) {
+        model.addAttribute("user", new User());
+        return "register";
+    }
+    @GetMapping("/login")
+    public String login() {
+        return "login";
     }
 }

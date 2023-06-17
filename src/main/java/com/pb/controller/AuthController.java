@@ -1,45 +1,39 @@
 package com.pb.controller;
 
-import com.pb.dto.RegisterDto;
-import com.pb.dto.UserDto;
+import com.pb.model.Role;
 import com.pb.model.User;
 import com.pb.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/auth")
 public class AuthController {
-    @Autowired
     private UserService userService;
 
-    @GetMapping("/signin")
-    public String login() {
-        return "login";
+    public AuthController(UserService userService) {
+        this.userService = userService;
     }
 
-    @GetMapping("/register")
-    public String register() {
-        return "register";
-    }
-
-    @PostMapping("/createUser")
-    public String createUser(@ModelAttribute RegisterDto registerDto) {
-        if(userService.checkEmail(registerDto.getEmail())) {
+    @PostMapping("/registerUser")
+    public String processRegister(User user, Model model) {
+        // user already exists
+        if(userService.checkEmail(user.getEmail())) {
+            model.addAttribute("message", "That email wash already used");
             return "register";
         }
-        else {
-            User user = new User();
-            user.setFirstname(registerDto.getFirstname());
-            user.setLastname(registerDto.getLastname());
-            user.setEmail(registerDto.getEmail());
-            user.setPassword(registerDto.getPassword());
+        // TODO: more validations
+        user.setRole(Role.USER);
+        userService.createUser(user);
+        model.addAttribute("message", "User created successfully");
 
-            UserDto userDto = userService.createUser(user);
-        }
+        return "login";
+    }
+    @PostMapping("/loginUser")
+    public String processLogin(Model model) {
 
-        return "register";
+        return "home";
     }
 }

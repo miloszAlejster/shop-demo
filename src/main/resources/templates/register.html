@@ -7,24 +7,24 @@
 <body>
 <div th:replace="fragments/header :: header"></div>
 <div>
-    <form action="createUser" method="post">
+    <form action="auth/registerUser" method="post" th:object="${user}">
         <div>
             <label>First name</label>
-            <input type="text" name="firstname">
+            <input type="text" th:field="*{firstname}" required>
         </div>
         <div>
             <label>Last name</label>
-            <input type="text" name="lastname">
+            <input type="text" th:field="*{lastname}" required>
         </div>
         <div>
             <label>Email</label>
-            <input type="email" name="email">
+            <input type="email" th:field="*{email}" required>
         </div>
         <div>
             <label>Password</label>
-            <input type="password" name="password">
+            <input type="password" th:field="*{password}" required>
         </div>
-        <button>Sign up</button>
+        <button type="submit">Sign up</button>
     </form>
 </div>
 <div th:replace="fragments/footer :: footer"></div>

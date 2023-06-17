@@ -1,6 +1,7 @@
 package com.pb.service.impl;
 
 import com.pb.dto.UserDto;
+import com.pb.model.Role;
 import com.pb.model.User;
 import com.pb.repository.UserRepository;
 import com.pb.service.UserService;
@@ -91,6 +92,7 @@ public class UserServiceImpl implements UserService {
                 .email(user.getEmail())
                 .orders(user.getOrders())
                 .password(user.getPassword())
+                .role(user.getRole().getValue())
                 .build();
         return userDto;
     }
@@ -103,6 +105,7 @@ public class UserServiceImpl implements UserService {
                 .email(userDto.getEmail())
                 .orders(userDto.getOrders())
                 .password(userDto.getPassword())
+                .role(Role.valueOf(userDto.getRole()))
                 .build();
         return user;
     }
