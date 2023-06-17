@@ -1,10 +1,8 @@
 package com.pb.service.impl;
 
 import com.pb.dto.ProductDto;
-import com.pb.dto.UserDto;
 import com.pb.model.Order;
 import com.pb.model.Product;
-import com.pb.model.User;
 import com.pb.repository.ProductRepository;
 import com.pb.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> findAllUsers() {
+    public List<ProductDto> findAllProducts() {
         List<Product> products = productRepository.findAll();
         return products.stream().map((product) -> mapToProductDto(product)).collect(Collectors.toList());
     }
