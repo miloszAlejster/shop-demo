@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,36 +47,69 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateProduct(ProductDto productDto) {
-        Product product = mapToProduct(productDto);
-        productRepository.save(product);
+//        Product product = mapToProduct(productDto);
+//        productRepository.save(product);
+
+        Optional<Product> optionalProduct = productRepository.findById(productDto.getId());
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            product.setDescription(productDto.getDescription());
+            product.setName(productDto.getName());
+            product.setPrice(productDto.getPrice());
+            productRepository.save(product);
+        }
     }
 
     @Override
     public void updateProductName(Long id, String newName) {
-        Product product = productRepository.findById(id).get();
-        product.setName(newName);
-        productRepository.save(product);
+//        Product product = productRepository.findById(id).get();
+//        product.setName(newName);
+//        productRepository.save(product);
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            product.setName(newName);
+            productRepository.save(product);
+        }
     }
 
     @Override
     public void updateProductDescription(Long id, String newDescription) {
-        Product product = productRepository.findById(id).get();
-        product.setDescription(newDescription);
-        productRepository.save(product);
+//        Product product = productRepository.findById(id).get();
+//        product.setDescription(newDescription);
+//        productRepository.save(product);
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            product.setDescription(newDescription);
+            productRepository.save(product);
+        }
     }
 
     @Override
-    public void updateUserPrice(Long id, Double newPrice) {
-        Product product = productRepository.findById(id).get();
-        product.setPrice(newPrice);
-        productRepository.save(product);
+    public void updateProductPrice(Long id, Double newPrice) {
+//        Product product = productRepository.findById(id).get();
+//        product.setPrice(newPrice);
+//        productRepository.save(product);
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            product.setPrice(newPrice);
+            productRepository.save(product);
+        }
     }
 
     @Override
-    public void updateUserOrders(Long id, Set<Order> newOrders) {
-        Product product = productRepository.findById(id).get();
-        product.setOrders(newOrders);
-        productRepository.save(product);
+    public void updateProductOrders(Long id, Set<Order> newOrders) {
+//        Product product = productRepository.findById(id).get();
+//        product.setOrders(newOrders);
+//        productRepository.save(product);
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            product.setOrders(newOrders);
+            productRepository.save(product);
+        }
     }
 
     private ProductDto mapToProductDto(Product product) {
