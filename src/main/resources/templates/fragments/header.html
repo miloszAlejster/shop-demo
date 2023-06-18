@@ -25,19 +25,47 @@
         }
     </style>
     <nav>
-         <ul>
-             <li>
-                 <a href="/">Home</a>
-             </li>
-             <li>
-                 <a href="/">Cart</a>
-             </li>
-             <li style="float: right;">
-                 <a href="/register">Register</a>
-             </li>
-             <li style="float: right;">
-                 <a href="/login">Login</a>
-             </li>
-         </ul>
+        <div th:if="${currentRole == '[ROLE_ANONYMOUS]'}">
+             <ul>
+                 <li>
+                     <a href="/">Home</a>
+                 </li>
+                 <li>
+                     <a href="/">Cart</a>
+                 </li>
+                 <li style="float: right;">
+                     <a href="/register">Register</a>
+                 </li>
+                 <li style="float: right;">
+                     <a href="/login">Login</a>
+                 </li>
+             </ul>
+        </div>
+        <div th:if="${currentRole == '[User]'}">
+            <ul>
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                <li>
+                    <a href="/">Cart</a>
+                </li>
+                <li style="float: right;">
+                    <a href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+        <div th:if="${currentRole == '[Admin]'}">
+            <ul>
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                <li style="float: right;">
+                    <a href="/">Dashboard</a>
+                </li>
+                <li style="float: right;">
+                    <a href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
      </nav>
 </div>
