@@ -2,10 +2,15 @@ package com.pb.service.impl;
 
 import com.pb.dto.UserDto;
 import com.pb.model.Role;
+import com.pb.model.SecurityUser;
 import com.pb.model.User;
 import com.pb.repository.UserRepository;
 import com.pb.service.UserService;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,10 +18,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
-
-    @Autowired
+public class UserServiceImpl implements UserService, UserDetailsService {
+    private UserRepository userRepository;
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -84,6 +87,16 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmail(email);
     }
 
+    @Override
+    public Optional<UserDto> findByEmail(String email) {
+        Optional<User> foundUser = userRepository.findByEmail(email);
+        if(foundUser.isEmpty()) {
+            return Optional.empty();
+        }
+        UserDto userDto = mapToUserDto(foundUser.get());
+        return Optional.ofNullable(userDto);
+    }
+
     private UserDto mapToUserDto(User user) {
         UserDto userDto = UserDto.builder()
                 .id(user.getId())
@@ -110,5 +123,11 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> foundUser = userRepository.findByEmail(username);
+        return foundUser
+                .map(SecurityUser::new)
+                .orElseThrow(() -> new UsernameNotFoundException("Email not found" + username));
+    }
 }

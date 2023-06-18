@@ -5,18 +5,8 @@
     <title th:text="${title}"></title>
 </head>
 <body>
-<div th:replace="fragments/header :: header"></div>
-<h1>Testing thymeleaf</h1>
-<h2>Users: </h2>
-<h1 th:if="${users.isEmpty()}">
-    No Users
-</h1>
-<ul th:each="user : ${users}" style="display: flex">
-    <li>
-        <td th:text="${user.id}">@: </td>
-        <td th:text="${user.firstname}">Name: </td>
-    </li>
-</ul>
-<div th:replace="fragments/footer :: footer"></div>
+<div th:replace="~{fragments/header :: header}"></div>
+<h1 th:text="${principal}"></h1>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

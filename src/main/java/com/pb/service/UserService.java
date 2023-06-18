@@ -4,9 +4,11 @@ import com.pb.dto.UserDto;
 import com.pb.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
     List<UserDto> findAllUsers();
+    Optional<UserDto> findByEmail(String email);
     UserDto createUser(User newUser);
     void deleteUser(Long id);
     UserDto getUserById(Long id);
