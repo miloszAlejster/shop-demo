@@ -11,60 +11,40 @@
                         <a class="nav-link" href="/">Home</a>
                     </li>
                 </ul>
-                <ul class="navbar-nav mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/register">Register</a>
-                    </li>
-                </ul>
+                <div th:if="${currentRole == '[ROLE_ANONYMOUS]'}">
+                    <ul class="navbar-nav mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Cart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">Register</a>
+                        </li>
+                    </ul>
+                </div>
+                <div th:if="${currentRole == '[User]'}">
+                    <ul class="navbar-nav mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Cart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+                <div th:if="${currentRole == '[Admin]'}">
+                    <ul class="navbar-nav mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Logout</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
 </div>
-
-
-<!--<div th:fragment="header" style="background-color: #333; margin: 0; padding: 0; width: 100%; top: 0">-->
-<!--    <style>-->
-<!--        ul {-->
-<!--            list-style-type: none;-->
-<!--            margin: 0;-->
-<!--            padding: 0;-->
-<!--            overflow: hidden;-->
-<!--            background-color: #333;-->
-<!--        }-->
-
-<!--        li {-->
-<!--            float: left;-->
-<!--        }-->
-
-<!--        li a {-->
-<!--            display: block;-->
-<!--            color: white;-->
-<!--            text-align: center;-->
-<!--            padding: 14px 16px;-->
-<!--            text-decoration: none;-->
-<!--        }-->
-
-<!--        li a:hover {-->
-<!--            background-color: #111;-->
-<!--        }-->
-<!--    </style>-->
-<!--    <nav>-->
-<!--         <ul>-->
-<!--             <li>-->
-<!--                 <a href="/">Home</a>-->
-<!--             </li>-->
-<!--             <li>-->
-<!--                 <a href="/">Cart</a>-->
-<!--             </li>-->
-<!--             <li style="float: right;">-->
-<!--                 <a href="/register">Register</a>-->
-<!--             </li>-->
-<!--             <li style="float: right;">-->
-<!--                 <a href="/login">Login</a>-->
-<!--             </li>-->
-<!--         </ul>-->
-<!--     </nav>-->
-<!--</div>-->

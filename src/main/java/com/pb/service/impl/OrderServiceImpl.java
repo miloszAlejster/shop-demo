@@ -2,16 +2,15 @@ package com.pb.service.impl;
 
 import com.pb.dto.OrderDto;
 import com.pb.dto.ProductDto;
-import com.pb.dto.UserDto;
 import com.pb.model.Order;
 import com.pb.model.Product;
-import com.pb.model.User;
 import com.pb.repository.OrderRepository;
 import com.pb.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,7 +29,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> finaAllUsersOrders(Long id) {
+    public List<OrderDto> findAllUsersOrders(Long id) {
         List<Order> orders = orderRepository.findAll();
         List<Order> usersOrders = orders.stream().filter((order) -> id.equals(order.getUser().getId())).toList();
         return usersOrders.stream().map(order -> mapToOrderDto(order)).collect(Collectors.toList());
@@ -55,26 +54,51 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void updateOrder(OrderDto orderDto) {
-        Order order = maptoOrder(orderDto);
-        orderRepository.save(order);
+//        Order order = maptoOrder(orderDto);
+//        orderRepository.save(order);
+        Optional<Order> optionalOrder = orderRepository.findById(orderDto.getId());
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            order.setProducts(orderDto.getProducts());
+            order.setUser(orderDto.getUser());
+            orderRepository.save(order);
+        }
     }
 
     @Override
     public void addProductToOrder(Long orderId, ProductDto productDto) {
-        Order order = orderRepository.findById(orderId).get();
-        List<Product> products = order.getProducts();
-        products.add(mapToProduct(productDto));
-        order.setProducts(products);
-        orderRepository.save(order);
+//        Order order = orderRepository.findById(orderId).get();
+//        List<Product> products = order.getProducts();
+//        products.add(mapToProduct(productDto));
+//        order.setProducts(products);
+//        orderRepository.save(order);
+
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            List<Product> products = order.getProducts();
+            products.add(mapToProduct(productDto));
+            order.setProducts(products);
+            orderRepository.save(order);
+        }
     }
 
     @Override
     public void removeProductFromOrder(Long orderId, ProductDto productDto) {
-        Order order = orderRepository.findById(orderId).get();
-        List<Product> products = order.getProducts();
-        products.remove(mapToProduct(productDto));
-        order.setProducts(products);
-        orderRepository.save(order);
+//        Order order = orderRepository.findById(orderId).get();
+//        List<Product> products = order.getProducts();
+//        products.remove(mapToProduct(productDto));
+//        order.setProducts(products);
+//        orderRepository.save(order);
+
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            List<Product> products = order.getProducts();
+            products.remove(mapToProduct(productDto));
+            order.setProducts(products);
+            orderRepository.save(order);
+        }
     }
 
     private OrderDto mapToOrderDto(Order order) {

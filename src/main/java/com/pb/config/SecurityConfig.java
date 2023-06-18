@@ -35,7 +35,6 @@ public class SecurityConfig {
             .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
             .formLogin(form -> form
                     .loginPage("/login")
-                    .defaultSuccessUrl("/")
                     .usernameParameter("email")
                     .passwordParameter("password")
                     .failureUrl("/login?error=true")
