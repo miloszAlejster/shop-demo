@@ -50,36 +50,72 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateUser(UserDto userDto) {
-        User user = maptoUser(userDto);
-        userRepository.save(user);
+//        User user = maptoUser(userDto);
+//        userRepository.save(user);
+
+        Optional<User> optionalUser = userRepository.findById(userDto.getId());
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setLastname(userDto.getLastname());
+            user.setEmail(userDto.getEmail());
+            user.setFirstname(userDto.getFirstname());
+            userRepository.save(user);
+        }
     }
 
     @Override
     public void updateUserFirstName(Long id, String newFirstName) {
-        User user = userRepository.findById(id).get();
-        user.setFirstname(newFirstName);
-        userRepository.save(user);
+//        User user = userRepository.findById(id).get();
+//        user.setFirstname(newFirstName);
+//        userRepository.save(user);
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setFirstname(newFirstName);
+            userRepository.save(user);
+        }
     }
 
     @Override
     public void updateUserLastName(Long id, String newLastName) {
-        User user = userRepository.findById(id).get();
-        user.setLastname(newLastName);
-        userRepository.save(user);
+//        User user = userRepository.findById(id).get();
+//        user.setLastname(newLastName);
+//        userRepository.save(user);
+
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setLastname(newLastName);
+            userRepository.save(user);
+        }
     }
 
     @Override
     public void updateUserEmail(Long id, String newEmail) {
-        User user = userRepository.findById(id).get();
-        user.setEmail(newEmail);
-        userRepository.save(user);
+//        User user = userRepository.findById(id).get();
+//        user.setEmail(newEmail);
+//        userRepository.save(user);
+
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setEmail(newEmail);
+            userRepository.save(user);
+        }
     }
 
     @Override
     public void updateUserPassword(Long id, String newPassword) {
-        User user = userRepository.findById(id).get();
-        user.setPassword(newPassword);
-        userRepository.save(user);
+//        User user = userRepository.findById(id).get();
+//        user.setPassword(newPassword);
+//        userRepository.save(user);
+
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setPassword(newPassword);
+            userRepository.save(user);
+        }
     }
 
     @Override
