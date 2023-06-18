@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}"></title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div style="width: 100%; display: flex; justify-content: center; padding: 1rem">
+    <form th:action="@{auth/register}" method="post" th:object="${user}" style="display: flex; flex-flow: column nowrap; width: 15rem; align-items: center; gap: 0.5rem">
+        <div th:if="${param.error}">
+            <h3>Email already exists</h3>
+        </div>
+
+        <input type="text" th:field="*{firstname}" th:placeholder="Firstname" required>
+        <input type="text" th:field="*{lastname}" th:placeholder="Lastname" required>
+        <input type="email" th:field="*{email}" th:placeholder="Email" required>
+        <input type="password" th:field="*{password}" th:placeholder="Password" required>
+        <button type="submit" th:text="Register" style="width: 5rem"></button>
+    </form>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

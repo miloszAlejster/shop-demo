@@ -20,7 +20,7 @@ public class UserController {
     public UserController (UserService service) {
         this.service = service;
     }
-    @GetMapping("/getAll")
+    @GetMapping(value="/getAll", produces="application/json")
     @ResponseBody
     List<UserDto> allUsers() {
         return service.findAllUsers();
