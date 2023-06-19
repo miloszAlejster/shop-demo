@@ -7,6 +7,11 @@
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 <div>
+  <div style="width: 100%; display: flex; justify-content: center; margin-top: 1rem">
+    <a href="/admin/users/new" style="display: flex">
+      <button type="button">Add New</button>
+    </a>
+  </div>
   <ul style="display: flex; flex-flow: column nowrap; gap: 1rem; background: transparent">
     <li th:each="list : ${usersList}" style="display: flex; flex-flow: row nowrap; justify-content: space-between">
       <div style="display: flex; flex-flow: row nowrap; gap: 1rem">

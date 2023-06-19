@@ -58,20 +58,4 @@ public class IndexController {
         model.addAttribute("title", "Shop - Admin");
         return "admin-dashboard";
     }
-
-    @GetMapping("/admin/users")
-    String adminUsers(Model model) {
-        model.addAttribute("title", "Shop - Admin");
-        List<UserDto> users = userService.findAllUsers();
-        model.addAttribute("usersList", users);
-        return "admin-users";
-    }
-
-    @GetMapping("/admin/users/edit")
-    String adminUsersEdit(@RequestParam("id") Long id, Model model) {
-        model.addAttribute("title", "Shop - Admin");
-        UserDto userDto = userService.getUserById(id);
-        model.addAttribute("user", userDto);
-        return "admin-users-edit";
-    }
 }
