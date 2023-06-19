@@ -47,4 +47,22 @@ public class IndexController {
         model.addAttribute("user", new User());
         return "register";
     }
+
+    @GetMapping("/my-orders")
+    public String my_orders(Model model) {
+        model.addAttribute("title", "Shop - My orders");
+        return "my_orders";
+    }
+
+    @GetMapping("/cart")
+    public String cart(Model model) {
+        model.addAttribute("title", "Shop - Cart");
+        return "cart";
+    }
+
+    @GetMapping("/products")
+    public String products(Model model) {
+        model.addAttribute("title", "Shop - Products");
+        return "products";
+    }
 }
