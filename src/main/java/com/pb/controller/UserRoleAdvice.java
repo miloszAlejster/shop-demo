@@ -16,4 +16,11 @@ public class UserRoleAdvice {
         String role = authentication.getAuthorities().toString();
         return role;
     }
+
+    @ModelAttribute("currentUserEmail")
+    public String currentUserEmail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return email;
+    }
 }
