@@ -6,6 +6,8 @@ import com.pb.model.Order;
 import com.pb.model.Product;
 import com.pb.repository.OrderRepository;
 import com.pb.service.OrderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
+
+    Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
+
     private final OrderRepository orderRepository;
 
     @Autowired
@@ -25,13 +30,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDto> findAllOrders() {
         List<Order> orders = orderRepository.findAll();
+        logger.info("All orders found");
         return orders.stream().map((order) -> mapToOrderDto(order)).collect(Collectors.toList());
     }
 
     @Override
     public List<OrderDto> findAllUsersOrders(Long id) {
         List<Order> orders = orderRepository.findAll();
+        logger.info("All orders found");
         List<Order> usersOrders = orders.stream().filter((order) -> id.equals(order.getUser().getId())).toList();
+        logger.info("All orders of user with id: " + id + " found");
         return usersOrders.stream().map(order -> mapToOrderDto(order)).collect(Collectors.toList());
     }
 
@@ -39,16 +47,19 @@ public class OrderServiceImpl implements OrderService {
     public void createOrder(OrderDto orderDto) {
         Order order = maptoOrder(orderDto);
         orderRepository.save(order);
+        logger.info("New order created: " + order.toString());
     }
 
     @Override
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
+        logger.info("Order with id: " + id + " deleted.");
     }
 
     @Override
     public OrderDto getOrderById(Long id) {
        Order order = orderRepository.findById(id).get();
+        logger.info("Order with id: " + id + " found.");
        return mapToOrderDto(order);
     }
 
@@ -58,10 +69,15 @@ public class OrderServiceImpl implements OrderService {
 //        orderRepository.save(order);
         Optional<Order> optionalOrder = orderRepository.findById(orderDto.getId());
         if (optionalOrder.isPresent()) {
+            logger.info("Order with id: " + orderDto.getId() + " found.");
             Order order = optionalOrder.get();
             order.setProducts(orderDto.getProducts());
             order.setUser(orderDto.getUser());
             orderRepository.save(order);
+            logger.info("Order with id: " + orderDto.getId() + " updated.");
+        }
+        else {
+            logger.error("Order with id: " + orderDto.getId() + " not found.");
         }
     }
 
@@ -75,11 +91,16 @@ public class OrderServiceImpl implements OrderService {
 
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isPresent()) {
+            logger.info("Order with id: " + orderId + " found.");
             Order order = optionalOrder.get();
             List<Product> products = order.getProducts();
             products.add(mapToProduct(productDto));
             order.setProducts(products);
             orderRepository.save(order);
+            logger.info("Added product: " + productDto.toString() + " to order with id: " + orderId);
+        }
+        else {
+            logger.error("Order with id: " + orderId + " not found.");
         }
     }
 
@@ -93,11 +114,16 @@ public class OrderServiceImpl implements OrderService {
 
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isPresent()) {
+            logger.info("Order with id: " + orderId + " found.");
             Order order = optionalOrder.get();
             List<Product> products = order.getProducts();
             products.remove(mapToProduct(productDto));
             order.setProducts(products);
             orderRepository.save(order);
+            logger.info("Removed product: " + productDto.toString() + " from order with id: " + orderId);
+        }
+        else {
+            logger.error("Order with id: " + orderId + " not found.");
         }
     }
 
