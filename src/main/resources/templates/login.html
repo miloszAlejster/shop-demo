@@ -7,7 +7,8 @@
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 <div style="width: 100%; display: flex; justify-content: center; padding: 1rem">
-    <form th:action="@{/login}" method="post" style="display: flex; flex-flow: column nowrap; width: 15rem; align-items: center; gap: 0.5rem">
+    <form th:action="@{/login}" method="post"
+          style="display: flex; flex-flow: column nowrap; width: 15rem; align-items: center; gap: 0.5rem">
         <div th:if="${param.error}">
             <h3>Invalid email or password</h3>
         </div>

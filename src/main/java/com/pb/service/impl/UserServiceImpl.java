@@ -6,8 +6,6 @@ import com.pb.model.SecurityUser;
 import com.pb.model.User;
 import com.pb.repository.UserRepository;
 import com.pb.service.UserService;
-import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -50,9 +48,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateUser(UserDto userDto) {
-//        User user = maptoUser(userDto);
-//        userRepository.save(user);
-
         Optional<User> optionalUser = userRepository.findById(userDto.getId());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -65,9 +60,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateUserFirstName(Long id, String newFirstName) {
-//        User user = userRepository.findById(id).get();
-//        user.setFirstname(newFirstName);
-//        userRepository.save(user);
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -78,10 +70,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateUserLastName(Long id, String newLastName) {
-//        User user = userRepository.findById(id).get();
-//        user.setLastname(newLastName);
-//        userRepository.save(user);
-
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -92,10 +80,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateUserEmail(Long id, String newEmail) {
-//        User user = userRepository.findById(id).get();
-//        user.setEmail(newEmail);
-//        userRepository.save(user);
-
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -106,10 +90,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateUserPassword(Long id, String newPassword) {
-//        User user = userRepository.findById(id).get();
-//        user.setPassword(newPassword);
-//        userRepository.save(user);
-
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();

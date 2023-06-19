@@ -5,20 +5,24 @@ import com.pb.model.User;
 import com.pb.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 @Controller
 public class IndexController {
+    private final UserService userService;
+
+    public IndexController(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/")
     String home(Model model) {
         String principal = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -32,6 +36,7 @@ public class IndexController {
         model.addAttribute("title", "Shop - Login");
         return "login";
     }
+
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -46,5 +51,27 @@ public class IndexController {
         model.addAttribute("title", "Shop - Register");
         model.addAttribute("user", new User());
         return "register";
+    }
+
+    @GetMapping("/admin")
+    String adminDashboard(Model model) {
+        model.addAttribute("title", "Shop - Admin");
+        return "admin-dashboard";
+    }
+
+    @GetMapping("/admin/users")
+    String adminUsers(Model model) {
+        model.addAttribute("title", "Shop - Admin");
+        List<UserDto> users = userService.findAllUsers();
+        model.addAttribute("usersList", users);
+        return "admin-users";
+    }
+
+    @GetMapping("/admin/users/edit")
+    String adminUsersEdit(@RequestParam("id") Long id, Model model) {
+        model.addAttribute("title", "Shop - Admin");
+        UserDto userDto = userService.getUserById(id);
+        model.addAttribute("user", userDto);
+        return "admin-users-edit";
     }
 }
