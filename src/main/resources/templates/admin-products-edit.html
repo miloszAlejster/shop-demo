@@ -7,14 +7,14 @@
   <form th:action="@{/product/edit}" th:object="${product}" method="post"
         style="display: flex; flex-flow: column nowrap; width: 15rem; align-items: center; gap: 0.5rem">
     <input hidden="hidden" th:value="${product.id}" name="id">
-    <input type="text" th:placeholder="Name" th:value="${product.name}" required name="name">
-    <input type="text" th:placeholder="Desciption" th:value="${product.description}" required name="description">
-    <input type="number" th:placeholder="Price" th:value="${product.price}" required name="price">
+    <input class="form-control" type="text" th:placeholder="Name" th:value="${product.name}" required name="name">
+    <input class="form-control" type="text" th:placeholder="Desciption" th:value="${product.description}" required name="description">
+    <input class="form-control" type="number" th:placeholder="Price" th:value="${product.price}" required name="price">
     <div style="display: flex; flex-flow: row nowrap; align-items: center; gap: 0.5rem">
-      <button type="submit" th:text="Confirm"
+      <button class="btn btn-primary" type="submit" th:text="Confirm"
               style="width: 5rem"></button>
-      <a href="/admin/products" style="display: flex">
-        <button type="button" th:text="Back"></button>
+      <a class="btn" href="/admin/products" style="display: flex">
+        <button class="btn btn-secondary" type="button" th:text="Back"></button>
       </a>
     </div>
   </form>
