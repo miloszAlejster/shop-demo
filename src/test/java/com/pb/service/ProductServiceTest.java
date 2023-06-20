@@ -55,7 +55,7 @@ public class ProductServiceTest {
 
         when(productRepository.save(Mockito.any(Product.class))).thenReturn(product);
 
-        productService.createProduct(productDto);
+        productService.createProduct(product);
 
         Assertions.assertThat(productDto.getId()).isEqualTo(product.getId());
         Assertions.assertThat(productDto.getName()).isEqualTo(product.getName());

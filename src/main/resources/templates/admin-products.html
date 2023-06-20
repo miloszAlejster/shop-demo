@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <title th:text="${title}"></title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div style="width: 100%; display: flex; justify-content: center; margin-top: 1rem">
+    <a href="/admin/products/new" style="display: flex">
+        <button type="button">Add New</button>
+    </a>
+</div>
+<ul style="display: flex; flex-flow: column nowrap; gap: 1rem; background: transparent">
+    <li th:each="list : ${productList}" style="display: flex; flex-flow: row nowrap; justify-content: space-between">
+        <div style="display: flex; flex-flow: row nowrap; gap: 1rem">
+            <h1 th:text="${list.id}"></h1>
+            <h1 th:text="${list.name}"></h1>
+            <h1 th:text="${list.description}"></h1>
+            <h1 th:text="${list.price}"></h1>
+        </div>
+        <div style="display: flex; flex-flow: row nowrap; gap: 1rem">
+            <a th:href="@{'/admin/products/edit?id='+${list.id}}" style="display: flex; padding: 0">
+                <button type="button" th:text="Edit"></button>
+            </a>
+            <button th:onclick="'javascript:handleProductDelete(' + ${list.id} + ')'" th:text="Delete"></button>
+        </div>
+    </li>
+</ul>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+<script>
+    const handleProductDelete = async (id) => {
+        await fetch(`/product/delete?id=${id}`, {method: "DELETE"})
+            .then((res) => {
+                window.location.reload()
+            })
+            .catch((err) => console.log(err))
+    }
+</script>
+</html>

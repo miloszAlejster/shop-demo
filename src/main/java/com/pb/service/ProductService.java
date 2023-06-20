@@ -2,13 +2,14 @@ package com.pb.service;
 
 import com.pb.dto.ProductDto;
 import com.pb.model.Order;
+import com.pb.model.Product;
 
 import java.util.List;
 import java.util.Set;
 
 public interface ProductService {
     List<ProductDto> findAllProducts();
-    void createProduct(ProductDto productDto);
+    ProductDto createProduct(Product product);
     void deleteProduct(Long id);
     ProductDto getProductById(Long id);
     void updateProduct(ProductDto productDto);

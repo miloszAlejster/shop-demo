@@ -35,10 +35,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void createProduct(ProductDto productDto) {
-        Product product = mapToProduct(productDto);
-        productRepository.save(product);
+    public ProductDto createProduct(Product product) {
+        Product createdProduct = productRepository.save(product);
         logger.info("New product created: " + product.toString());
+        return mapToProductDto(createdProduct);
     }
 
     @Override

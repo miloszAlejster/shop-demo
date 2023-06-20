@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}"></title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div style="width: 100%; display: flex; justify-content: center; padding: 1rem">
+  <form th:action="@{/admin/products/create}" method="post" th:object="${product}"
+        style="display: flex; flex-flow: column nowrap; width: 15rem; align-items: center; gap: 0.5rem">
+    <input type="text" th:field="*{name}" th:placeholder="Name" required>
+    <input type="text" th:field="*{description}" th:placeholder="Description" required>
+    <input type="number" th:field="*{price}" th:placeholder="Price" required>
+    <button type="submit" style="width: 5rem">Create Product</button>
+  </form>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
