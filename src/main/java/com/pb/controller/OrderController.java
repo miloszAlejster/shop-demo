@@ -61,4 +61,10 @@ public class OrderController {
         Optional<OrderDto> activeOrder = orderService.findActiveOrder(activeUser.get().getId());
         orderService.removeProductFromOrder(activeOrder.get().getId(), productId);
     }
+    @PostMapping("/orderCart")
+    @ResponseStatus(value = HttpStatus.OK)
+    void orderCart(@RequestParam("orderId") Long orderId) {
+        orderService.setOrderInactive(orderId);
+        //TODO: email sender here
+    }
 }

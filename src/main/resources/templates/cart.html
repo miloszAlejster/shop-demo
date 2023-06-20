@@ -32,7 +32,8 @@
           <p class="card-text" th:text="${sum}"></p>
         </div>
         <div class="card-footer text-body-secondary">
-          <button class="btn btn-primary">Order</button>
+          <button class="btn btn-primary"
+                  th:onclick="'javascript:handleSendOrder(' + ${orderId} + ')'" th:text="Order">
         </div>
       </div>
     </div>
@@ -44,7 +45,14 @@
 <script>
   const handleProductRemove = async (id) => {
     await fetch(`/order/removeProductFromOrder?productId=${id}`, {method: "DELETE"})
-            .then((res) => {
+            .then(() => {
+              window.location.reload()
+            })
+            .catch((err) => console.log(err))
+  }
+  const handleSendOrder = async (orderId) => {
+    await fetch(`/order/orderCart?orderId=${orderId}`, {method: "POST"})
+            .then(() => {
               window.location.reload()
             })
             .catch((err) => console.log(err))

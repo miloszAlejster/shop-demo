@@ -98,6 +98,14 @@ public class OrderServiceImpl implements OrderService {
         return sum;
     }
 
+    @Override
+    public void setOrderInactive(Long orderId) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        Order order = optionalOrder.get();
+        order.setIsActive(false);
+        orderRepository.save(order);
+    }
+
 //    @Override
 //    public void updateOrder(OrderDto orderDto) {
 ////        Order order = maptoOrder(orderDto);

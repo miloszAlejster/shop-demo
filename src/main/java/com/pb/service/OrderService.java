@@ -15,6 +15,7 @@ public interface OrderService {
     OrderDto getOrderById(Long id);
     Double getOrderSum(Long orderId);
 //    void updateOrder(OrderDto orderDto);
+    void setOrderInactive(Long orderId);
     void addProductToOrder(Long orderId, Long productId);
     void removeProductFromOrder(Long orderId, Long productId);
     Optional<OrderDto> findActiveOrder(Long userId);

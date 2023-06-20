@@ -3,6 +3,7 @@ package com.pb.controller;
 import com.pb.dto.OrderDto;
 import com.pb.dto.ProductDto;
 import com.pb.dto.UserDto;
+import com.pb.model.Order;
 import com.pb.model.Product;
 import com.pb.model.User;
 import com.pb.service.OrderService;
@@ -90,11 +91,19 @@ public class IndexController {
     public String cart(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         model.addAttribute("title", "Shop - Cart");
         Optional<UserDto> activeUser = userService.findByEmail(userDetails.getUsername());
-        Optional<OrderDto> activeOrder = orderService.findActiveOrder(activeUser.get().getId());
-        List<ProductDto> products = activeOrder.get().getProducts();
+        Optional<OrderDto> activeOptionalOrder = orderService.findActiveOrder(activeUser.get().getId());
+        OrderDto orderDto = new OrderDto();
+        if(activeOptionalOrder.isPresent()) {
+            orderDto = activeOptionalOrder.get();
+        }
+        if(activeOptionalOrder.isEmpty()) {
+            orderDto = orderService.createOrderWithUserId(activeUser.get().getId());
+        }
+        List<ProductDto> products = orderDto.getProducts();
         model.addAttribute("products", products);
-        Double totalPrice = orderService.getOrderSum(activeOrder.get().getId());
+        Double totalPrice = orderService.getOrderSum(orderDto.getId());
         model.addAttribute("sum", totalPrice);
+        model.addAttribute("orderId", orderDto.getId());
         return "cart";
     }
 
