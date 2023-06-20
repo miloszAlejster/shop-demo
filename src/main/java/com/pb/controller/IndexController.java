@@ -68,7 +68,7 @@ public class IndexController {
     String adminDashboard(Model model) {
         model.addAttribute("title", "Shop - Admin");
         return "admin-dashboard";
-
+    }
     @GetMapping("/my-orders")
     public String my_orders(Model model) {
         model.addAttribute("title", "Shop - My orders");
