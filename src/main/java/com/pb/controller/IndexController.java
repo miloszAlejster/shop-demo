@@ -5,6 +5,10 @@ import com.pb.model.User;
 import com.pb.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -22,18 +26,22 @@ public class IndexController {
     public IndexController(UserService userService) {
         this.userService = userService;
     }
+    Logger logger = LoggerFactory.getLogger(IndexController.class);
+
 
     @GetMapping("/")
     String home(Model model) {
         String principal = SecurityContextHolder.getContext().getAuthentication().getName();
         model.addAttribute("title", "Shop");
         model.addAttribute("principal", principal);
+        logger.info("[GET] Home Page");
         return "home";
     }
 
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("title", "Shop - Login");
+        logger.info("[GET] Login Page");
         return "login";
     }
 
@@ -43,6 +51,7 @@ public class IndexController {
         if (auth != null){
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
+        logger.info("User logout");
         return "redirect:/login";
     }
 
@@ -50,12 +59,32 @@ public class IndexController {
     String register(Model model) {
         model.addAttribute("title", "Shop - Register");
         model.addAttribute("user", new User());
+        logger.info("[GET] Register Page");
         return "register";
     }
+
 
     @GetMapping("/admin")
     String adminDashboard(Model model) {
         model.addAttribute("title", "Shop - Admin");
         return "admin-dashboard";
+
+    @GetMapping("/my-orders")
+    public String my_orders(Model model) {
+        model.addAttribute("title", "Shop - My orders");
+        return "my_orders";
+    }
+
+    @GetMapping("/cart")
+    public String cart(Model model) {
+        model.addAttribute("title", "Shop - Cart");
+        return "cart";
+    }
+
+    @GetMapping("/products")
+    public String products(Model model) {
+        model.addAttribute("title", "Shop - Products");
+        return "products";
+
     }
 }
