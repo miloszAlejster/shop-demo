@@ -13,6 +13,7 @@ import java.util.Set;
 @Data
 @Builder
 public class UserDto {
+    public UserDto() {}
     public UserDto(Long id, String firstname, String lastname, String email, String password, Role role, List<OrderDto> orders){
         this.id = id;
         this.firstname = firstname;

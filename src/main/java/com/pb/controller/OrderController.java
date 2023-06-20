@@ -66,5 +66,6 @@ public class OrderController {
     void orderCart(@RequestParam("orderId") Long orderId) {
         orderService.setOrderInactive(orderId);
         //TODO: email sender here
+        //TODO: prevent empty order
     }
 }

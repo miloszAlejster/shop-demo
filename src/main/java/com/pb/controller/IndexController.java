@@ -23,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -82,8 +83,21 @@ public class IndexController {
         return "admin-dashboard";
     }
     @GetMapping("/my-orders")
-    public String my_orders(Model model) {
+    public String my_orders(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         model.addAttribute("title", "Shop - My orders");
+        Optional<UserDto> activeOptionalUser = userService.findByEmail(userDetails.getUsername());
+        UserDto userDto = new UserDto();
+        if(activeOptionalUser.isPresent()) {
+            userDto = activeOptionalUser.get();
+        }
+        List<OrderDto> orders = orderService.findAllUsersOrders(userDto.getId());
+        model.addAttribute("orders", orders);
+        List<Double> sums = new ArrayList<>();
+        for (OrderDto orderDto : orders) {
+            Double totalPrice = orderService.getOrderSum(orderDto.getId());
+            sums.add(totalPrice);
+        }
+        model.addAttribute("sums", sums);
         return "my_orders";
     }
 
