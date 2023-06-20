@@ -4,8 +4,12 @@ import com.pb.dto.UserDto;
 import com.pb.model.User;
 import com.pb.service.UserService;
 import com.pb.service.impl.UserServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +24,7 @@ public class UserController {
     public UserController (UserService service) {
         this.service = service;
     }
-    @GetMapping(value="/getAll", produces="application/json")
+    @GetMapping("/getAll")
     @ResponseBody
     List<UserDto> allUsers() {
         return service.findAllUsers();
@@ -39,5 +43,12 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.OK)
     void deleteUser(@RequestParam("id") Long id) {
         service.deleteUser(id);
+    }
+    @PostMapping(value = "/edit", consumes = "application/x-www-form-urlencoded")
+    public String updateUser(UserDto userDto, HttpServletRequest request, Model model) {
+        service.updateUser(userDto);
+        // TODO: temporary solution
+        String referer = request.getHeader("Referer");
+        return "redirect:"+ referer;
     }
 }

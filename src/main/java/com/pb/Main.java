@@ -21,13 +21,27 @@ public class Main {
     @Bean
     CommandLineRunner commandLineRunner(UserRepository userRepository) {
         return args -> {
-            User user = new User();
-            user.setEmail("user@gmail.com");
-            user.setPassword("123");
-            user.setFirstname("user");
-            user.setLastname("auuuuuu");
-            user.setRole(Role.USER);
-            userRepository.save(user);
+            User user1 = new User();
+            user1.setEmail("user@gmail.com");
+            user1.setPassword("123");
+            user1.setFirstname("user");
+            user1.setLastname("auuuuuu");
+            user1.setRole(Role.USER);
+            userRepository.save(user1);
+            User user2 = new User();
+            user2.setEmail("user2@gmail.com");
+            user2.setPassword("1232");
+            user2.setFirstname("user2");
+            user2.setLastname("auuuuuu2");
+            user2.setRole(Role.USER);
+            userRepository.save(user2);
+            User admin = new User();
+            admin.setEmail("admin@gmail.com");
+            admin.setPassword("admin");
+            admin.setFirstname("admin");
+            admin.setLastname("admin");
+            admin.setRole(Role.ADMIN);
+            userRepository.save(admin);
         };
     }
 }

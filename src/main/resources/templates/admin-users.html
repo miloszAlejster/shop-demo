@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${title}"></title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div>
+  <div style="width: 100%; display: flex; justify-content: center; margin-top: 1rem">
+    <a href="/admin/users/new" style="display: flex">
+      <button type="button">Add New</button>
+    </a>
+  </div>
+  <ul style="display: flex; flex-flow: column nowrap; gap: 1rem; background: transparent">
+    <li th:each="list : ${usersList}" style="display: flex; flex-flow: row nowrap; justify-content: space-between">
+      <div style="display: flex; flex-flow: row nowrap; gap: 1rem">
+        <h1 th:text="${list.id}"></h1>
+        <h1 th:text="${list.role}"></h1>
+        <h1 th:text="${list.email}"></h1>
+        <h1 th:text="${list.firstname}"></h1>
+        <h1 th:text="${list.lastname}"></h1>
+      </div>
+      <div style="display: flex; flex-flow: row nowrap; gap: 1rem">
+        <a th:href="@{'/admin/users/edit?id='+${list.id}}" style="display: flex; padding: 0">
+          <button type="button" th:text="Edit"></button>
+        </a>
+        <button th:onclick="'javascript:handleUserDelete(' + ${list.id} + ')'" th:text="Delete"></button>
+      </div>
+    </li>
+  </ul>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+<script>
+  const handleUserDelete = async (id) => {
+    await fetch(`/user/delete?id=${id}`, {method: "DELETE"})
+            .then((res) => {
+              window.location.reload()
+            })
+            .catch((err) => console.log(err))
+  }
+</script>
+</html>
