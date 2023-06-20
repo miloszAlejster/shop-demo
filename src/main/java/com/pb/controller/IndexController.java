@@ -2,6 +2,7 @@ package com.pb.controller;
 
 import com.pb.dto.UserDto;
 import com.pb.model.User;
+import com.pb.service.MailService;
 import com.pb.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,8 +24,11 @@ import java.util.List;
 public class IndexController {
     private final UserService userService;
 
-    public IndexController(UserService userService) {
+    private final MailService mailService;
+
+    public IndexController(UserService userService, MailService mailService) {
         this.userService = userService;
+        this.mailService = mailService;
     }
     Logger logger = LoggerFactory.getLogger(IndexController.class);
 
@@ -86,5 +90,11 @@ public class IndexController {
         model.addAttribute("title", "Shop - Products");
         return "products";
 
+    }
+
+    @GetMapping("/sendmail")
+    public String sendMail() {
+        mailService.sendMail("shop.email.sender@gmail.com", "Test", "Massage Test");
+        return "redirect:/";
     }
 }

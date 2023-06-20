@@ -31,4 +31,14 @@ spring:
       static-locations: file:src/main/resources/static/
       cache:
         period: 0
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: shop.email.sender@gmail.com
+    password: jgmboigxdchtgvtv
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
