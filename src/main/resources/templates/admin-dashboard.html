@@ -3,15 +3,15 @@
 <head th:replace="~{fragments/header :: header-html}"></head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
-<div>
+<div class="md-3 mt-3">
     <div style="width: 100%; display: flex; flex-flow: row nowrap; justify-content: space-evenly">
         <div style="display: flex; flex-flow: column nowrap; align-items: center">
             <h2>Products</h2>
-            <a href="/admin/products" th:text="Enter"></a>
+            <a class="btn btn-primary" href="/admin/products" th:text="Enter"></a>
         </div>
         <div style="display: flex; flex-flow: column nowrap; align-items: center">
             <h2>Users</h2>
-            <a href="/admin/users" th:text="Enter"></a>
+            <a class="btn btn-primary" href="/admin/users" th:text="Enter"></a>
         </div>
     </div>
 </div>

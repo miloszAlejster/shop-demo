@@ -8,14 +8,14 @@
             style="display: flex; flex-flow: column nowrap; width: 15rem; align-items: center; gap: 0.5rem">
         <input hidden="hidden" th:value="${user.id}" name="id">
         <input hidden="hidden" th:value="${user.role}" name="role">
-        <input type="text" th:placeholder="Firstname" th:value="${user.firstname}" required name="firstname">
-        <input type="text" th:placeholder="Lastname" th:value="${user.lastname}" required name="lastname">
-        <input type="email" th:placeholder="Email" th:value="${user.email}" required name="email">
+        <input class="form-control" type="text" th:placeholder="Firstname" th:value="${user.firstname}" required name="firstname">
+        <input class="form-control" type="text" th:placeholder="Lastname" th:value="${user.lastname}" required name="lastname">
+        <input class="form-control" type="email" th:placeholder="Email" th:value="${user.email}" required name="email">
         <div style="display: flex; flex-flow: row nowrap; align-items: center; gap: 0.5rem">
-            <button type="submit" th:text="Confirm"
+            <button class="btn btn-primary" type="submit" th:text="Confirm"
                     style="width: 5rem"></button>
-            <a href="/admin/users" style="display: flex">
-                <button type="button" th:text="Back"></button>
+            <a class="btn" href="/admin/users" style="display: flex">
+                <button class="btn btn-secondary" type="button" th:text="Back"></button>
             </a>
         </div>
     </form>
