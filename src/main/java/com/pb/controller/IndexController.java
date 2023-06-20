@@ -1,7 +1,11 @@
 package com.pb.controller;
 
+import com.pb.dto.OrderDto;
 import com.pb.dto.ProductDto;
+import com.pb.dto.UserDto;
+import com.pb.model.Product;
 import com.pb.model.User;
+import com.pb.service.OrderService;
 import com.pb.service.ProductService;
 import com.pb.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,22 +14,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class IndexController {
     private final UserService userService;
     private final ProductService productService;
+    private final OrderService orderService;
 
-    public IndexController(UserService userService, ProductService productService) {
+    public IndexController(UserService userService, ProductService productService, OrderService orderService) {
         this.userService = userService;
         this.productService = productService;
+        this.orderService = orderService;
     }
     Logger logger = LoggerFactory.getLogger(IndexController.class);
 
@@ -77,8 +87,14 @@ public class IndexController {
     }
 
     @GetMapping("/cart")
-    public String cart(Model model) {
+    public String cart(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         model.addAttribute("title", "Shop - Cart");
+        Optional<UserDto> activeUser = userService.findByEmail(userDetails.getUsername());
+        Optional<OrderDto> activeOrder = orderService.findActiveOrder(activeUser.get().getId());
+        List<ProductDto> products = activeOrder.get().getProducts();
+        model.addAttribute("products", products);
+        Double totalPrice = orderService.getOrderSum(activeOrder.get().getId());
+        model.addAttribute("sum", totalPrice);
         return "cart";
     }
 

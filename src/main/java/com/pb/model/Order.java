@@ -19,6 +19,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private Boolean isActive;
     @ManyToOne(cascade = {CascadeType.ALL})
     private User user;
     @ManyToMany(cascade = {CascadeType.ALL})

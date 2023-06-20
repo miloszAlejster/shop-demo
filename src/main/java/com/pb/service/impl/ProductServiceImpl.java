@@ -31,14 +31,15 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDto> findAllProducts() {
         List<Product> products = productRepository.findAll();
         logger.info("All products found");
-        return products.stream().map((product) -> mapToProductDto(product)).collect(Collectors.toList());
+        return products.stream().map(ProductDto::new).collect(Collectors.toList());
     }
 
     @Override
     public ProductDto createProduct(Product product) {
         Product createdProduct = productRepository.save(product);
         logger.info("New product created: " + product.toString());
-        return mapToProductDto(createdProduct);
+        ProductDto productDto = new ProductDto(createdProduct);
+        return productDto;
     }
 
     @Override
@@ -51,7 +52,8 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto getProductById(Long id) {
         Product product = productRepository.findById(id).get();
         logger.info("Product with id: " + id + " found.");
-        return mapToProductDto(product);
+        ProductDto productDto = new ProductDto(product);
+        return productDto;
     }
 
     @Override
@@ -146,25 +148,25 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private ProductDto mapToProductDto(Product product) {
-        ProductDto productDto = ProductDto.builder()
-                .id(product.getId())
-                .name(product.getName())
-                .description(product.getDescription())
-                .price(product.getPrice())
-                .orders(product.getOrders())
-                .build();
-        return productDto;
-    }
-
-    private Product mapToProduct(ProductDto productDto) {
-        Product product = Product.builder()
-                .id(productDto.getId())
-                .name(productDto.getName())
-                .description(productDto.getDescription())
-                .price(productDto.getPrice())
-                .orders(productDto.getOrders())
-                .build();
-        return product;
-    }
+//    private ProductDto mapToProductDto(Product product) {
+//        ProductDto productDto = ProductDto.builder()
+//                .id(product.getId())
+//                .name(product.getName())
+//                .description(product.getDescription())
+//                .price(product.getPrice())
+//                .orders(product.getOrders())
+//                .build();
+//        return productDto;
+//    }
+//
+//    private Product mapToProduct(ProductDto productDto) {
+//        Product product = Product.builder()
+//                .id(productDto.getId())
+//                .name(productDto.getName())
+//                .description(productDto.getDescription())
+//                .price(productDto.getPrice())
+//                .orders(productDto.getOrders())
+//                .build();
+//        return product;
+//    }
 }

@@ -1,5 +1,6 @@
 package com.pb.service.impl;
 
+import com.pb.dto.OrderDto;
 import com.pb.dto.UserDto;
 import com.pb.model.Role;
 import com.pb.model.SecurityUser;
@@ -33,14 +34,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public List<UserDto> findAllUsers() {
         List<User> users = userRepository.findAll();
         logger.info("All users found");
-        return users.stream().map((user) -> mapToUserDto(user)).collect(Collectors.toList());
+        return users.stream().map(UserDto::new).collect(Collectors.toList());
     }
 
     @Override
     public UserDto createUser(User newUser) {
         User createdUser = userRepository.save(newUser);
         logger.info("New user created: " + createdUser.toString());
-        return mapToUserDto(createdUser);
+        return new UserDto(createdUser);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDto getUserById(Long id) {
         User foundUser = userRepository.findById(id).get();
-        UserDto userDto = mapToUserDto(foundUser);
+        UserDto userDto = new UserDto(foundUser);
         logger.info("User with id: " + id + " found.");
         return userDto;
     }
@@ -152,35 +153,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             logger.error("User with given email does not exists. Email: " + email);
             return Optional.empty();
         }
-        UserDto userDto = mapToUserDto(foundUser.get());
+        UserDto userDto = new UserDto(foundUser.get());
         logger.error("User with given email exists. Email: " + email);
         return Optional.ofNullable(userDto);
-    }
-
-    private UserDto mapToUserDto(User user) {
-        UserDto userDto = UserDto.builder()
-                .id(user.getId())
-                .firstname(user.getFirstname())
-                .lastname(user.getLastname())
-                .email(user.getEmail())
-                .orders(user.getOrders())
-                .password(user.getPassword())
-                .role(user.getRole().getValue())
-                .build();
-        return userDto;
-    }
-
-    private User maptoUser(UserDto userDto) {
-        User user = User.builder()
-                .id(userDto.getId())
-                .firstname(userDto.getFirstname())
-                .lastname(userDto.getLastname())
-                .email(userDto.getEmail())
-                .orders(userDto.getOrders())
-                .password(userDto.getPassword())
-                .role(Role.valueOf(userDto.getRole()))
-                .build();
-        return user;
     }
 
     @Override

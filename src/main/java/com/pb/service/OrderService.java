@@ -1,17 +1,21 @@
 package com.pb.service;
 
 import com.pb.dto.OrderDto;
-import com.pb.dto.ProductDto;
+import com.pb.model.Order;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderService {
     List<OrderDto> findAllOrders();
     List<OrderDto> findAllUsersOrders(Long id);
-    void createOrder(OrderDto orderDto);
+    OrderDto createOrder(Order order);
+    OrderDto createOrderWithUserId(Long userId);
     void deleteOrder(Long id);
     OrderDto getOrderById(Long id);
-    void updateOrder(OrderDto orderDto);
-    void addProductToOrder(Long orderId, ProductDto productDto);
-    void removeProductFromOrder(Long orderId, ProductDto productDto);
+    Double getOrderSum(Long orderId);
+//    void updateOrder(OrderDto orderDto);
+    void addProductToOrder(Long orderId, Long productId);
+    void removeProductFromOrder(Long orderId, Long productId);
+    Optional<OrderDto> findActiveOrder(Long userId);
 }
