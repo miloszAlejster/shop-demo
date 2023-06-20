@@ -1,13 +1,13 @@
 package com.pb.controller;
 
-import com.pb.dto.UserDto;
+import com.pb.dto.ProductDto;
 import com.pb.model.User;
+import com.pb.service.ProductService;
 import com.pb.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,16 +15,17 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 @Controller
 public class IndexController {
     private final UserService userService;
+    private final ProductService productService;
 
-    public IndexController(UserService userService) {
+    public IndexController(UserService userService, ProductService productService) {
         this.userService = userService;
+        this.productService = productService;
     }
     Logger logger = LoggerFactory.getLogger(IndexController.class);
 
@@ -84,6 +85,8 @@ public class IndexController {
     @GetMapping("/products")
     public String products(Model model) {
         model.addAttribute("title", "Shop - Products");
+        List<ProductDto> products = productService.findAllProducts();
+        model.addAttribute("products", products);
         return "products";
 
     }
