@@ -1,7 +1,9 @@
 package com.pb;
 
+import com.pb.model.Product;
 import com.pb.model.Role;
 import com.pb.model.User;
+import com.pb.repository.ProductRepository;
 import com.pb.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,7 +21,7 @@ public class Main {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(UserRepository userRepository) {
+    CommandLineRunner commandLineRunner(UserRepository userRepository, ProductRepository productRepository) {
         return args -> {
             User user1 = new User();
             user1.setEmail("user@gmail.com");
@@ -42,6 +44,21 @@ public class Main {
             admin.setLastname("admin");
             admin.setRole(Role.ADMIN);
             userRepository.save(admin);
+            Product product1 = new Product();
+            product1.setName("Telephone");
+            product1.setPrice(399);
+            product1.setDescription("It rings");
+            productRepository.save(product1);
+            Product product2 = new Product();
+            product2.setName("Spoon");
+            product2.setPrice(5);
+            product2.setDescription("Fool");
+            productRepository.save(product2);
+            Product product3 = new Product();
+            product3.setName("Bottle");
+            product3.setPrice(10);
+            product3.setDescription("Water bottle");
+            productRepository.save(product3);
         };
     }
 }

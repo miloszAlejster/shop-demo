@@ -1,8 +1,11 @@
 package com.pb.controller;
 
+import com.pb.dto.ProductDto;
 import com.pb.dto.UserDto;
+import com.pb.model.Product;
 import com.pb.model.Role;
 import com.pb.model.User;
+import com.pb.service.ProductService;
 import com.pb.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,9 +20,11 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
     private final UserService userService;
+    private final ProductService productService;
 
-    public AdminController(UserService userService) {
+    public AdminController(UserService userService, ProductService productService) {
         this.userService = userService;
+        this.productService = productService;
     }
 
     @GetMapping("/users")
@@ -45,7 +50,7 @@ public class AdminController {
         return "admin-users-new";
     }
     @PostMapping("/user/create")
-    public String processRegister(User user, Model model) {
+    public String processUserCreate(User user, Model model) {
         // user already exists
         boolean isUserPresent = userService.checkEmail(user.getEmail());
         if(isUserPresent) {
@@ -55,5 +60,31 @@ public class AdminController {
         userService.createUser(user);
         model.addAttribute("message", "User created successfully");
         return "redirect:/admin/users";
+    }
+    @GetMapping("/products")
+    String adminProducts(Model model) {
+        model.addAttribute("title", "Shop - Admin");
+        List<ProductDto> products = productService.findAllProducts();
+        model.addAttribute("productList", products);
+        return "admin-products";
+    }
+    @GetMapping("/products/edit")
+    String adminProductEdit(@RequestParam("id") Long id, Model model) {
+        model.addAttribute("title", "Shop - Admin");
+        ProductDto productDto = productService.getProductById(id);
+        model.addAttribute("product", productDto);
+        return "admin-products-edit";
+    }
+
+    @GetMapping("/products/new")
+    String adminProductNew(Model model) {
+        model.addAttribute("title", "Shop - Admin");
+        model.addAttribute("product", new Product());
+        return "admin-products-new";
+    }
+    @PostMapping("/products/create")
+    public String processProductCreate(Product product, Model model) {
+        productService.createProduct(product);
+        return "redirect:/admin/products";
     }
 }
