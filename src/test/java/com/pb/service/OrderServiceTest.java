@@ -71,6 +71,7 @@ public class OrderServiceTest {
 
         List<OrderDto> savedOrders = orderService.findAllOrders();
 
+        verify(orderRepository, times(1)).findAll();
         Assertions.assertThat(savedOrders).isNotNull();
     }
 
@@ -83,6 +84,7 @@ public class OrderServiceTest {
 
         List<OrderDto> savedOrders = orderService.findAllUsersOrders(userId);
 
+        verify(orderRepository, times(1)).findAll();
         Assertions.assertThat(savedOrders).isNotNull();
     }
 
@@ -98,6 +100,7 @@ public class OrderServiceTest {
 
         OrderDto orderDto = orderService.createOrder(order);
 
+        verify(orderRepository, times(1)).save(order);
         Assertions.assertThat(orderDto.getId()).isEqualTo(new OrderDto(order).getId());
         Assertions.assertThat(orderDto.getUser()).isEqualTo(new OrderDto(order).getUser());
         Assertions.assertThat(orderDto.getProducts()).isEqualTo(new OrderDto(order).getProducts());
@@ -107,7 +110,10 @@ public class OrderServiceTest {
     public void OrderService_DeleteOrder() {
         Long orderId = 1L;
 
-        assertAll(() -> orderService.deleteOrder(orderId));
+        orderService.deleteOrder(orderId);
+
+        //assertAll(() -> orderService.deleteOrder(orderId));
+        verify(orderRepository, times(1)).deleteById(orderId);
     }
 
     @Test
@@ -262,5 +268,47 @@ public class OrderServiceTest {
 
         verify(orderRepository, times(1)).findById(1L);
         verify(orderRepository, never()).save(any());
+    }
+
+    @Test
+    public void OrderService_GetOrderSum_OrderExists_ReturnsSum() {
+        Product product1 = Product.builder()
+                .id(1L)
+                .price(10.0)
+                .build();
+        Product product2 = Product.builder()
+                .id(2L)
+                .price(20.0)
+                .build();
+        ArrayList<Product> products = new ArrayList<>();
+        products.add(product2);
+        products.add(product1);
+        Order order = Order.builder()
+                .id(1L)
+                .user(new User())
+                .products(products)
+                .build();
+
+        when(orderRepository.findById(order.getId())).thenReturn(Optional.of(order));
+
+        Double expectedSum = 30.0;
+        Double actualSum = orderService.getOrderSum(order.getId());
+
+        Assertions.assertThat(actualSum).isEqualTo(expectedSum);
+
+        verify(orderRepository, times(1)).findById(order.getId());
+    }
+
+    @Test
+    public void OrderService_GetOrderSum_OrderNotExists_ReturnsZero() {
+        Long orderId = 1L;
+
+        when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+
+        Double expectedSum = 0.0;
+        Double actualSum = orderService.getOrderSum(orderId);
+
+        Assertions.assertThat(actualSum).isEqualTo(expectedSum);
+        verify(orderRepository, times(1)).findById(orderId);
     }
 }

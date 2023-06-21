@@ -1,6 +1,7 @@
 package com.pb.service;
 
 import com.pb.dto.ProductDto;
+import com.pb.model.Order;
 import com.pb.model.Product;
 import com.pb.repository.ProductRepository;
 import com.pb.service.impl.ProductServiceImpl;
@@ -37,6 +38,7 @@ public class ProductServiceTest {
 
         List<ProductDto> savedProducts = productService.findAllProducts();
 
+        verify(productRepository, times(1)).findAll();
         Assertions.assertThat(savedProducts).isNotNull();
     }
 
@@ -61,6 +63,7 @@ public class ProductServiceTest {
 
         productService.createProduct(product);
 
+        verify(productRepository, times(1)).save(product);
         Assertions.assertThat(productDto.getId()).isEqualTo(product.getId());
         Assertions.assertThat(productDto.getName()).isEqualTo(product.getName());
         Assertions.assertThat(productDto.getDescription()).isEqualTo(product.getDescription());
@@ -72,11 +75,15 @@ public class ProductServiceTest {
     public void ProductService_DeleteProduct() {
         Long productId = 1L;
 
-        assertAll(() -> productService.deleteProduct(productId));
+        productService.deleteProduct(productId);
+
+        verify(productRepository, times(1)).deleteById(productId);
+
+        //assertAll(() -> productService.deleteProduct(productId));
     }
 
     @Test
-    public void ProductService_GetProductById_ReturnsProductDto() {
+    public void ProductService_GetProductById_ProductFound_ReturnsProductDto() {
         Product product = Product.builder()
                 .id(1L)
                 .name("name")
@@ -89,11 +96,24 @@ public class ProductServiceTest {
 
         ProductDto savedProduct = productService.getProductById(1L);
 
+        verify(productRepository, times(1)).findById(1L);
         Assertions.assertThat(savedProduct).isNotNull();
         Assertions.assertThat(savedProduct.getId()).isEqualTo(1L);
         Assertions.assertThat(savedProduct.getName()).isEqualTo("name");
         Assertions.assertThat(savedProduct.getDescription()).isEqualTo("description");
         Assertions.assertThat(savedProduct.getPrice()).isEqualTo(20.3);
+    }
+
+    @Test
+    public void ProductService_GetProductById_ProductNotFound_ReturnsNull() {
+        Long productId = 1L;
+
+        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+
+        ProductDto savedProduct = productService.getProductById(productId);
+
+        verify(productRepository, times(1)).findById(productId);
+        Assertions.assertThat(savedProduct).isNull();
     }
 
     @Test
@@ -251,11 +271,52 @@ public class ProductServiceTest {
 
     @Test
     public void ProductService_UpdateProductOrders_ProductExists_ProductOrdersUpdated() {
-        // TODO
+        HashSet<Order> newOrders = new HashSet<>();
+        Order order1 = Order.builder()
+                .id(1L)
+                .build();
+        Order order2 = Order.builder()
+                .id(2L)
+                .build();
+        newOrders.add(order1);
+        newOrders.add(order2);
+
+        Product existingProduct = new Product();
+        existingProduct.setId(1L);
+        existingProduct.setOrders(new HashSet<>());
+
+        Product updatedProduct = new Product();
+        updatedProduct.setId(1L);
+        updatedProduct.setOrders(newOrders);
+
+        when(productRepository.findById(1L)).thenReturn(Optional.of(existingProduct));
+        when(productRepository.save(updatedProduct)).thenReturn(updatedProduct);
+
+        productService.updateProductOrders(1L, newOrders);
+
+        verify(productRepository).findById(1L);
+        verify(productRepository).save(updatedProduct);
+        Assertions.assertThat(existingProduct.getOrders()).isEqualTo(newOrders);
     }
 
     @Test
     public void ProductService_UpdateProductOrders_ProductDontExists_NothingUpdated() {
-        //TODO
+        Long productId = 1L;
+        HashSet<Order> newOrders = new HashSet<>();
+        Order order1 = Order.builder()
+                .id(1L)
+                .build();
+        Order order2 = Order.builder()
+                .id(2L)
+                .build();
+        newOrders.add(order1);
+        newOrders.add(order2);
+
+        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+
+        productService.updateProductOrders(productId, newOrders);
+
+        verify(productRepository).findById(productId);
+        verify(productRepository, never()).save(any());
     }
 }

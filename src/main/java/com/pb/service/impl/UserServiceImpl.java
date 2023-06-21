@@ -52,10 +52,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDto getUserById(Long id) {
-        User foundUser = userRepository.findById(id).get();
-        UserDto userDto = new UserDto(foundUser);
-        logger.info("User with id: " + id + " found.");
-        return userDto;
+//        User foundUser = userRepository.findById(id).get();
+//        UserDto userDto = new UserDto(foundUser);
+//        logger.info("User with id: " + id + " found.");
+//        return userDto;
+
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            logger.info("User with id: " + id + " found.");
+            User user = optionalUser.get();
+            return new UserDto(user);
+        }
+        else {
+            logger.error("User with id: " + id + " not found.");
+            return null;
+        }
     }
 
     @Override
@@ -164,6 +175,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Optional<User> foundUser = userRepository.findByEmail(username);
         return foundUser
                 .map(SecurityUser::new)
-                .orElseThrow(() -> new UsernameNotFoundException("Email not found" + username));
+                .orElseThrow(() -> new UsernameNotFoundException("Email not found " + username));
     }
 }

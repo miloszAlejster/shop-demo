@@ -101,10 +101,19 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Double getOrderSum(Long orderId) {
+//        OrderDto orderDto = getOrderById(orderId);
+//        Double sum = 0.0;
+//        for(ProductDto p : orderDto.getProducts()) {
+//            sum += p.getPrice();
+//        }
+//        return sum;
+
         OrderDto orderDto = getOrderById(orderId);
         Double sum = 0.0;
-        for(ProductDto p : orderDto.getProducts()) {
-            sum += p.getPrice();
+        if (orderDto != null) {
+            for(ProductDto p : orderDto.getProducts()) {
+                sum += p.getPrice();
+            }
         }
         return sum;
     }
