@@ -7,6 +7,7 @@ import com.pb.model.Order;
 import com.pb.model.Product;
 import com.pb.model.User;
 import com.pb.repository.OrderRepository;
+import com.pb.repository.ProductRepository;
 import com.pb.service.impl.OrderServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -28,8 +29,39 @@ public class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
 
+    @Mock
+    private ProductRepository productRepository;
+
     @InjectMocks
     private OrderServiceImpl orderService;
+
+    @Test
+    public void OrderService_SetOrderInactive_OrderFound_ShouldSetOrderInactive() {
+        Order order = Order.builder()
+                .id(1L)
+                .isActive(true)
+                .build();
+
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+
+        orderService.setOrderInactive(1L);
+
+        verify(orderRepository, times(1)).findById(1L);
+        verify(orderRepository, times(1)).save(order);
+        Assertions.assertThat(false).isEqualTo(order.getIsActive());
+    }
+
+    @Test
+    public void OrderService_SetOrderInactive_OrderNotFound_ShouldNotSetOrderInactive() {
+        Long orderId = 1L;
+
+        when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+
+        orderService.setOrderInactive(orderId);
+
+        verify(orderRepository, times(1)).findById(1L);
+        verify(orderRepository, never()).save(any());
+    }
 
     @Test
     public void OrderService_findAllOrders_ReturnsOrderDtoList() {
@@ -61,19 +93,14 @@ public class OrderServiceTest {
                 .user(new User())
                 .products(new ArrayList<Product>())
                 .build();
-        OrderDto orderDto = OrderDto.builder()
-                .id(1L)
-                .user(new UserDto(new User()))
-                .products(new ArrayList<ProductDto>())
-                .build();
 
         when(orderRepository.save(Mockito.any(Order.class))).thenReturn(order);
 
-        orderService.createOrder(order);
+        OrderDto orderDto = orderService.createOrder(order);
 
-        Assertions.assertThat(orderDto.getId()).isEqualTo(order.getId());
-        Assertions.assertThat(orderDto.getUser()).isEqualTo(order.getUser());
-        Assertions.assertThat(orderDto.getProducts()).isEqualTo(order.getProducts());
+        Assertions.assertThat(orderDto.getId()).isEqualTo(new OrderDto(order).getId());
+        Assertions.assertThat(orderDto.getUser()).isEqualTo(new OrderDto(order).getUser());
+        Assertions.assertThat(orderDto.getProducts()).isEqualTo(new OrderDto(order).getProducts());
     }
 
     @Test
@@ -84,7 +111,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void OrderService_GetOrderById_ReturnsOrderDto() {
+    public void OrderService_GetOrderById_OrderFound_ReturnsOrderDto() {
         Order order = Order.builder()
                 .id(1L)
                 .user(new User())
@@ -95,10 +122,23 @@ public class OrderServiceTest {
 
         OrderDto savedOrder = orderService.getOrderById(1L);
 
+        verify(orderRepository, times(1)).findById(1L);
         Assertions.assertThat(savedOrder).isNotNull();
         Assertions.assertThat(savedOrder.getId()).isEqualTo(1L);
-        Assertions.assertThat(savedOrder.getUser()).isEqualTo(new User());
-        Assertions.assertThat(savedOrder.getProducts()).isEqualTo(new ArrayList<Product>());
+        Assertions.assertThat(savedOrder.getUser()).isEqualTo(new UserDto());
+        Assertions.assertThat(savedOrder.getProducts()).isEqualTo(new ArrayList<ProductDto>());
+    }
+
+    @Test
+    public void OrderService_GetOrderById_OrderNotFound_ReturnsNull() {
+        Long orderId = 1L;
+
+        when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+
+        OrderDto savedOrder = orderService.getOrderById(orderId);
+
+        verify(orderRepository, times(1)).findById(1L);
+        Assertions.assertThat(savedOrder).isNull();
     }
 
 //    @Test
@@ -148,7 +188,7 @@ public class OrderServiceTest {
 
     @Test
     public void OrderService_ShouldAddProductToOrder_OrderExists() {
-        ProductDto productDto = ProductDto.builder()
+        Product product = Product.builder()
                 .id(1L)
                 .build();
         List<Product> existingProducts = new ArrayList<>();
@@ -159,8 +199,9 @@ public class OrderServiceTest {
                 .build();
 
         when(orderRepository.findById(1L)).thenReturn(Optional.of(existingOrder));
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        orderService.addProductToOrder(1L, productDto.getId());
+        orderService.addProductToOrder(existingOrder.getId(), product.getId());
 
         verify(orderRepository, times(1)).findById(1L);
         verify(orderRepository, times(1)).save(existingOrder);
@@ -171,6 +212,7 @@ public class OrderServiceTest {
     public void OrderService_ShouldNotAddProductToOrder_OrderDontExists() {
         ProductDto productDto = ProductDto.builder()
                 .id(1L)
+                .orders(new ArrayList<>())
                 .build();
 
         when(orderRepository.findById(1L)).thenReturn(Optional.empty());
@@ -183,7 +225,7 @@ public class OrderServiceTest {
 
     @Test
     public void OrderService_ShouldRemoveProductToOrder_OrderExists() {
-        ProductDto productDto = ProductDto.builder()
+        Product product = Product.builder()
                 .id(1L)
                 .build();
         List<Product> existingProducts = new ArrayList<>();
@@ -197,9 +239,11 @@ public class OrderServiceTest {
                 .build();
 
         when(orderRepository.findById(1L)).thenReturn(Optional.of(existingOrder));
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        orderService.removeProductFromOrder(1L, productDto.getId());
+        orderService.removeProductFromOrder(1L, 1L);
 
+        verify(productRepository, times(1)).findById(1L);
         verify(orderRepository, times(1)).findById(1L);
         verify(orderRepository, times(1)).save(existingOrder);
         Assertions.assertThat(0).isEqualTo(existingOrder.getProducts().size());
@@ -209,6 +253,7 @@ public class OrderServiceTest {
     public void OrderService_ShouldNotRemoveProductToOrder_OrderDontExists() {
         ProductDto productDto = ProductDto.builder()
                 .id(1L)
+                .orders(new ArrayList<>())
                 .build();
 
         when(orderRepository.findById(1L)).thenReturn(Optional.empty());

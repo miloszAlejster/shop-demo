@@ -82,10 +82,21 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto getOrderById(Long id) {
-       Order order = orderRepository.findById(id).get();
-        logger.info("Order with id: " + id + " found.");
+//       Order order = orderRepository.findById(id).get();
+//        logger.info("Order with id: " + id + " found.");
+//
+//       return new OrderDto(order);
 
-       return new OrderDto(order);
+       Optional<Order> optionalOrder = orderRepository.findById(id);
+       if(optionalOrder.isPresent()) {
+           Order order = optionalOrder.get();
+           logger.info("Order with id: " + id + " found.");
+           return new OrderDto(order);
+       }
+       else {
+           logger.info("Order with id: " + id + " not found.");
+           return null;
+       }
     }
 
     @Override
@@ -101,9 +112,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void setOrderInactive(Long orderId) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        Order order = optionalOrder.get();
-        order.setIsActive(false);
-        orderRepository.save(order);
+        if (optionalOrder.isPresent()) {
+            logger.info("Order with id: " + orderId + " found.");
+            Order order = optionalOrder.get();
+            order.setIsActive(false);
+            orderRepository.save(order);
+            logger.info("Order with id: " + " is now inactive.");
+        }
+        else {
+            logger.error("Order with id: " + orderId + " not found.");
+        }
     }
 
 //    @Override

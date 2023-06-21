@@ -12,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,12 +47,14 @@ public class ProductServiceTest {
                 .name("name")
                 .description("description")
                 .price(20.3)
+                .orders(new HashSet<>())
                 .build();
         ProductDto productDto = ProductDto.builder()
                 .id(1L)
                 .name("name")
                 .description("description")
                 .price(20.3)
+                .orders(new ArrayList<>())
                 .build();
 
         when(productRepository.save(Mockito.any(Product.class))).thenReturn(product);
@@ -78,6 +82,7 @@ public class ProductServiceTest {
                 .name("name")
                 .description("description")
                 .price(20.3)
+                .orders(new HashSet<>())
                 .build();
 
         when(productRepository.findById(1L)).thenReturn(Optional.ofNullable(product));
@@ -98,6 +103,7 @@ public class ProductServiceTest {
                 .name("name")
                 .description("description")
                 .price(20.3)
+                .orders(new ArrayList<>())
                 .build();
 
         Product existngProduct = Product.builder()
@@ -125,6 +131,7 @@ public class ProductServiceTest {
                 .name("name")
                 .description("description")
                 .price(20.3)
+                .orders(new ArrayList<>())
                 .build();
 
         when(productRepository.findById(1L)).thenReturn(Optional.empty());

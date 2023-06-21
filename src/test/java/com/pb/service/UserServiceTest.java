@@ -1,6 +1,7 @@
 package com.pb.service;
 
 import com.pb.dto.UserDto;
+import com.pb.model.Order;
 import com.pb.model.User;
 import com.pb.repository.UserRepository;
 import com.pb.service.impl.UserServiceImpl;
@@ -12,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +36,7 @@ public class UserServiceTest {
                 .lastname("Doe")
                 .email("john.doe@example.com")
                 .password("password")
+                .orders(new ArrayList<Order>())
                 .build();
 
         when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
@@ -66,6 +69,7 @@ public class UserServiceTest {
                 .lastname("Doe")
                 .email("john.doe@example.com")
                 .password("password")
+                .orders(new ArrayList<Order>())
                 .build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
@@ -259,6 +263,7 @@ public class UserServiceTest {
                 .firstname("John")
                 .lastname("Doe")
                 .email("john.doe@example.com")
+                .orders(new ArrayList<>())
                 .build();
 
         User existngUser = User.builder()
@@ -286,6 +291,7 @@ public class UserServiceTest {
                 .firstname("John")
                 .lastname("Doe")
                 .email("john.doe@example.com")
+                .orders(new ArrayList<>())
                 .build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
