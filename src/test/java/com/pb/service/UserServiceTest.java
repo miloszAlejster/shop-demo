@@ -43,6 +43,7 @@ public class UserServiceTest {
 
         UserDto savedUser = userService.createUser(user);
 
+        verify(userRepository, times(1)).save(user);
         Assertions.assertThat(savedUser).isNotNull();
         Assertions.assertThat(savedUser.getId()).isEqualTo(1L);
         Assertions.assertThat(savedUser.getFirstname()).isEqualTo("John");
@@ -58,6 +59,7 @@ public class UserServiceTest {
 
         List<UserDto> savedUsers = userService.findAllUsers();
 
+        verify(userRepository, times(1)).findAll();
         Assertions.assertThat(savedUsers).isNotNull();
     }
 
@@ -76,6 +78,7 @@ public class UserServiceTest {
 
         UserDto savedUser = userService.getUserById(1L);
 
+        verify(userRepository, times(1)).findById(1L);
         Assertions.assertThat(savedUser).isNotNull();
         Assertions.assertThat(savedUser.getId()).isEqualTo(1L);
         Assertions.assertThat(savedUser.getFirstname()).isEqualTo("John");
@@ -98,6 +101,7 @@ public class UserServiceTest {
 
         boolean found = userService.checkEmail(email);
 
+        verify(userRepository, times(1)).existsByEmail(email);
         Assertions.assertThat(found).isTrue();
     }
 
@@ -109,6 +113,7 @@ public class UserServiceTest {
 
         boolean found = userService.checkEmail(email);
 
+        verify(userRepository, times(1)).existsByEmail(email);
         Assertions.assertThat(found).isFalse();
     }
 
@@ -299,5 +304,33 @@ public class UserServiceTest {
         userService.updateUser(userDto);
 
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    public void UserService_FindByEmail_UserFound_ReturnsOptionalUserDto() {
+        User user = User.builder()
+                .id(1L)
+                .email("example@example.com")
+                .orders(new ArrayList<>())
+                .build();
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
+        Optional<UserDto> optionalUserDto = userService.findByEmail(user.getEmail());
+
+        verify(userRepository, times(1)).findByEmail(user.getEmail());
+        Assertions.assertThat(user.getEmail()).isEqualTo(optionalUserDto.get().getEmail());
+    }
+
+    @Test
+    public void UserService_FindByEmail_UserNotFound_ReturnsOptionalEmpty() {
+        String email = "example@example.com";
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        Optional<UserDto> optionalUserDto = userService.findByEmail(email);
+
+        verify(userRepository, times(1)).findByEmail(email);
+        Assertions.assertThat(optionalUserDto).isEqualTo(Optional.empty());
     }
 }
