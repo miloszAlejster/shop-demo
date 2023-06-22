@@ -34,13 +34,13 @@ public class IndexController {
     private final UserService userService;
     private final ProductService productService;
     private final OrderService orderService;
-    private final MailService mailService;
+    //private final MailService mailService;
 
-    public IndexController(UserService userService, ProductService productService, OrderService orderService, MailService mailService) {
+    public IndexController(UserService userService, ProductService productService, OrderService orderService/*, MailService mailService*/) {
         this.userService = userService;
         this.productService = productService;
         this.orderService = orderService;
-        this.mailService = mailService;
+        //this.mailService = mailService;
     }
     Logger logger = LoggerFactory.getLogger(IndexController.class);
 
