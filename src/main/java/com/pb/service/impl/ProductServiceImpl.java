@@ -50,10 +50,21 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto getProductById(Long id) {
-        Product product = productRepository.findById(id).get();
-        logger.info("Product with id: " + id + " found.");
-        ProductDto productDto = new ProductDto(product);
-        return productDto;
+//        Product product = productRepository.findById(id).get();
+//        logger.info("Product with id: " + id + " found.");
+//        ProductDto productDto = new ProductDto(product);
+//        return productDto;
+
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            logger.info("Product with id: " + id + " found.");
+            Product product = optionalProduct.get();
+            return new ProductDto(product);
+        }
+        else {
+            logger.error("Product with id: " + id + " not found.");
+            return null;
+        }
     }
 
     @Override

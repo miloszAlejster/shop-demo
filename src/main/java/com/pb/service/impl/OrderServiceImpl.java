@@ -82,18 +82,38 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto getOrderById(Long id) {
-       Order order = orderRepository.findById(id).get();
-        logger.info("Order with id: " + id + " found.");
+//       Order order = orderRepository.findById(id).get();
+//        logger.info("Order with id: " + id + " found.");
+//
+//       return new OrderDto(order);
 
-       return new OrderDto(order);
+       Optional<Order> optionalOrder = orderRepository.findById(id);
+       if(optionalOrder.isPresent()) {
+           Order order = optionalOrder.get();
+           logger.info("Order with id: " + id + " found.");
+           return new OrderDto(order);
+       }
+       else {
+           logger.info("Order with id: " + id + " not found.");
+           return null;
+       }
     }
 
     @Override
     public Double getOrderSum(Long orderId) {
+//        OrderDto orderDto = getOrderById(orderId);
+//        Double sum = 0.0;
+//        for(ProductDto p : orderDto.getProducts()) {
+//            sum += p.getPrice();
+//        }
+//        return sum;
+
         OrderDto orderDto = getOrderById(orderId);
         Double sum = 0.0;
-        for(ProductDto p : orderDto.getProducts()) {
-            sum += p.getPrice();
+        if (orderDto != null) {
+            for(ProductDto p : orderDto.getProducts()) {
+                sum += p.getPrice();
+            }
         }
         return sum;
     }
@@ -101,9 +121,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void setOrderInactive(Long orderId) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        Order order = optionalOrder.get();
-        order.setIsActive(false);
-        orderRepository.save(order);
+        if (optionalOrder.isPresent()) {
+            logger.info("Order with id: " + orderId + " found.");
+            Order order = optionalOrder.get();
+            order.setIsActive(false);
+            orderRepository.save(order);
+            logger.info("Order with id: " + " is now inactive.");
+        }
+        else {
+            logger.error("Order with id: " + orderId + " not found.");
+        }
     }
 
     @Override
@@ -112,6 +139,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isPresent() && optionalProduct.isPresent()) {
             logger.info("Order with id: " + orderId + " found.");
+            logger.info("Product with id: " + productId + " found.");
             Order order = optionalOrder.get();
             List<Product> products = order.getProducts();
             products.add(optionalProduct.get());

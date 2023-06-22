@@ -1,6 +1,7 @@
 package com.pb.service;
 
 import com.pb.dto.UserDto;
+import com.pb.model.Order;
 import com.pb.model.User;
 import com.pb.repository.UserRepository;
 import com.pb.service.impl.UserServiceImpl;
@@ -11,7 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,12 +38,14 @@ public class UserServiceTest {
                 .lastname("Doe")
                 .email("john.doe@example.com")
                 .password("password")
+                .orders(new ArrayList<Order>())
                 .build();
 
         when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
 
         UserDto savedUser = userService.createUser(user);
 
+        verify(userRepository, times(1)).save(user);
         Assertions.assertThat(savedUser).isNotNull();
         Assertions.assertThat(savedUser.getId()).isEqualTo(1L);
         Assertions.assertThat(savedUser.getFirstname()).isEqualTo("John");
@@ -55,23 +61,26 @@ public class UserServiceTest {
 
         List<UserDto> savedUsers = userService.findAllUsers();
 
+        verify(userRepository, times(1)).findAll();
         Assertions.assertThat(savedUsers).isNotNull();
     }
 
     @Test
-    public void UserService_GetUserById_ReturnsUserDto() {
+    public void UserService_GetUserById_UserFound_ReturnsUserDto() {
         User user = User.builder()
                 .id(1L)
                 .firstname("John")
                 .lastname("Doe")
                 .email("john.doe@example.com")
                 .password("password")
+                .orders(new ArrayList<Order>())
                 .build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
 
         UserDto savedUser = userService.getUserById(1L);
 
+        verify(userRepository, times(1)).findById(1L);
         Assertions.assertThat(savedUser).isNotNull();
         Assertions.assertThat(savedUser.getId()).isEqualTo(1L);
         Assertions.assertThat(savedUser.getFirstname()).isEqualTo("John");
@@ -80,10 +89,26 @@ public class UserServiceTest {
     }
 
     @Test
+    public void UserService_GetUserById_UserNotFound_ReturnsNull() {
+        Long userId = 1L;
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        UserDto savedUser = userService.getUserById(userId);
+
+        verify(userRepository, times(1)).findById(userId);
+        Assertions.assertThat(savedUser).isNull();
+    }
+
+    @Test
     public void UserService_DeleteUser() {
         Long userId = 1L;
 
-        assertAll(() -> userService.deleteUser(userId));
+        userService.deleteUser(userId);
+
+        verify(userRepository, times(1)).deleteById(userId);
+
+//        assertAll(() -> userService.deleteUser(userId));
     }
 
     @Test
@@ -94,6 +119,7 @@ public class UserServiceTest {
 
         boolean found = userService.checkEmail(email);
 
+        verify(userRepository, times(1)).existsByEmail(email);
         Assertions.assertThat(found).isTrue();
     }
 
@@ -105,6 +131,7 @@ public class UserServiceTest {
 
         boolean found = userService.checkEmail(email);
 
+        verify(userRepository, times(1)).existsByEmail(email);
         Assertions.assertThat(found).isFalse();
     }
 
@@ -259,6 +286,7 @@ public class UserServiceTest {
                 .firstname("John")
                 .lastname("Doe")
                 .email("john.doe@example.com")
+                .orders(new ArrayList<>())
                 .build();
 
         User existngUser = User.builder()
@@ -286,6 +314,7 @@ public class UserServiceTest {
                 .firstname("John")
                 .lastname("Doe")
                 .email("john.doe@example.com")
+                .orders(new ArrayList<>())
                 .build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
@@ -293,5 +322,62 @@ public class UserServiceTest {
         userService.updateUser(userDto);
 
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    public void UserService_FindByEmail_UserFound_ReturnsOptionalUserDto() {
+        User user = User.builder()
+                .id(1L)
+                .email("example@example.com")
+                .orders(new ArrayList<>())
+                .build();
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
+        Optional<UserDto> optionalUserDto = userService.findByEmail(user.getEmail());
+
+        verify(userRepository, times(1)).findByEmail(user.getEmail());
+        Assertions.assertThat(user.getEmail()).isEqualTo(optionalUserDto.get().getEmail());
+    }
+
+    @Test
+    public void UserService_FindByEmail_UserNotFound_ReturnsOptionalEmpty() {
+        String email = "example@example.com";
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        Optional<UserDto> optionalUserDto = userService.findByEmail(email);
+
+        verify(userRepository, times(1)).findByEmail(email);
+        Assertions.assertThat(optionalUserDto).isEqualTo(Optional.empty());
+    }
+
+    @Test
+    public void UserService_LoadUserByUsername_UserExists_ReturnUserDetails() {
+        User user = User.builder()
+                .id(1L)
+                .email("email@example.com")
+                .build();
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
+        UserDetails userDetails = userService.loadUserByUsername(user.getEmail());
+
+        verify(userRepository, times(1)).findByEmail(user.getEmail());
+        Assertions.assertThat(userDetails).isNotNull();
+        Assertions.assertThat(userDetails.getUsername()).isEqualTo(user.getEmail());
+    }
+
+    @Test
+    public void UserService_LoadUserByUsername_UserDontExists_ThrowsUsernameNotFoundException() {
+        String userEmail = "email@example.com";
+
+        when(userRepository.findByEmail(userEmail)).thenReturn(Optional.empty());
+
+        Assertions.assertThatThrownBy(() -> userService.loadUserByUsername(userEmail))
+                .isInstanceOf(UsernameNotFoundException.class)
+                .hasMessage("Email not found " + userEmail);
+
+        verify(userRepository, times(1)).findByEmail(userEmail);
     }
 }

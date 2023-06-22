@@ -47,7 +47,8 @@ public class UserRepositoryTest {
         repository.save(user2);
         List<User> users = repository.findAll();
         Assertions.assertNotNull(users);
-        Assertions.assertEquals(2, users.size());
+        //Assertions.assertEquals(2, users.size());
+        Assertions.assertEquals(5, users.size()); // because commandLineRunner creates 3
     }
     @Test
     public void UserRepository_FindById_ReturnUser() {
