@@ -1,32 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-  <title th:text="${title}"></title>
-</head>
+<head th:replace="~{fragments/header :: header-html}"></head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 <div style="width: 100%; display: flex; justify-content: center; margin-top: 1rem">
-    <a href="/admin/products/new" style="display: flex">
-        <button type="button">Add New</button>
+    <a class="btn btn-success" href="/admin/products/new" style="display: flex">
+        Add New
     </a>
 </div>
-<ul style="display: flex; flex-flow: column nowrap; gap: 1rem; background: transparent">
-    <li th:each="list : ${productList}" style="display: flex; flex-flow: row nowrap; justify-content: space-between">
-        <div style="display: flex; flex-flow: row nowrap; gap: 1rem">
-            <h1 th:text="${list.id}"></h1>
-            <h1 th:text="${list.name}"></h1>
-            <h1 th:text="${list.description}"></h1>
-            <h1 th:text="${list.price}"></h1>
-        </div>
-        <div style="display: flex; flex-flow: row nowrap; gap: 1rem">
-            <a th:href="@{'/admin/products/edit?id='+${list.id}}" style="display: flex; padding: 0">
-                <button type="button" th:text="Edit"></button>
-            </a>
-            <button th:onclick="'javascript:handleProductDelete(' + ${list.id} + ')'" th:text="Delete"></button>
-        </div>
-    </li>
-</ul>
+<div class="container-fluid md-3 mt-3">
+    <ul class="list-group">
+        <li class="list-group-item" th:each="list : ${productList}" style="display: flex; flex-flow: row nowrap; justify-content: space-between">
+            <div style="display: flex; flex-flow: row nowrap; gap: 1rem">
+                <h4 th:text="${list.id}"></h4><div class="vr"></div>
+                <h4 th:text="${list.name}"></h4><div class="vr"></div>
+                <h4 th:text="${list.description}"></h4><div class="vr"></div>
+                <h4 th:text="${list.price}"></h4>
+            </div>
+            <div style="display: flex; flex-flow: row nowrap; gap: 1rem">
+                <a class="btn" th:href="@{'/admin/products/edit?id='+${list.id}}" style="display: flex; padding: 0">
+                    <button class="btn btn-primary" type="button" th:text="Edit"></button>
+                </a>
+                <button class="btn btn-danger" th:onclick="'javascript:handleProductDelete(' + ${list.id} + ')'" th:text="Delete"></button>
+            </div>
+        </li>
+    </ul>
+</div>
 <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 <script>
