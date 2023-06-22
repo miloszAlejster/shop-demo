@@ -6,6 +6,7 @@ import com.pb.dto.UserDto;
 import com.pb.model.Order;
 import com.pb.model.Product;
 import com.pb.model.User;
+import com.pb.service.MailService;
 import com.pb.service.OrderService;
 import com.pb.service.ProductService;
 import com.pb.service.UserService;
@@ -33,11 +34,13 @@ public class IndexController {
     private final UserService userService;
     private final ProductService productService;
     private final OrderService orderService;
+    private final MailService mailService;
 
-    public IndexController(UserService userService, ProductService productService, OrderService orderService) {
+    public IndexController(UserService userService, ProductService productService, OrderService orderService, MailService mailService) {
         this.userService = userService;
         this.productService = productService;
         this.orderService = orderService;
+        this.mailService = mailService;
     }
     Logger logger = LoggerFactory.getLogger(IndexController.class);
 
@@ -128,5 +131,11 @@ public class IndexController {
         model.addAttribute("products", products);
         return "products";
 
+    }
+
+    @GetMapping("/sendmail")
+    public String sendMail() {
+        mailService.sendMail("shop.email.sender@gmail.com", "Test", "Massage Test");
+        return "redirect:/";
     }
 }
