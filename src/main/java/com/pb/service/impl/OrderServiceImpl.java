@@ -157,6 +157,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isPresent() && optionalProduct.isPresent()) {
             logger.info("Order with id: " + orderId + " found.");
+            logger.info("Product with id: " + productId + " found.");
             Order order = optionalOrder.get();
             List<Product> products = order.getProducts();
             products.add(optionalProduct.get());

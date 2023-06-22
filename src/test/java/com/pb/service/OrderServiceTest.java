@@ -8,7 +8,9 @@ import com.pb.model.Product;
 import com.pb.model.User;
 import com.pb.repository.OrderRepository;
 import com.pb.repository.ProductRepository;
+import com.pb.repository.UserRepository;
 import com.pb.service.impl.OrderServiceImpl;
+import org.aspectj.weaver.ast.Or;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +33,9 @@ public class OrderServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private OrderServiceImpl orderService;
@@ -77,12 +82,25 @@ public class OrderServiceTest {
 
     @Test
     public void OrderService_findAllUsersOrders_ReturnsOrderDtoList() {
-        Long userId = 1L;
-        List<Order> orderList = Mockito.mock(List.class);
+        User user = User.builder().id(1L).build();
+        Order order1 = Order.builder()
+                .id(1L)
+                .user(user)
+                .products(new ArrayList<Product>())
+                .build();
+        Order order2 = Order.builder()
+                .id(2L)
+                .user(user)
+                .products(new ArrayList<Product>())
+                .build();
+        List<Order> orderList = new ArrayList<>();
+        orderList.add(order1);
+        orderList.add(order2);
+        user.setOrders(orderList);
 
         when(orderRepository.findAll()).thenReturn(orderList);
 
-        List<OrderDto> savedOrders = orderService.findAllUsersOrders(userId);
+        List<OrderDto> savedOrders = orderService.findAllUsersOrders(user.getId());
 
         verify(orderRepository, times(1)).findAll();
         Assertions.assertThat(savedOrders).isNotNull();
@@ -310,5 +328,57 @@ public class OrderServiceTest {
 
         Assertions.assertThat(actualSum).isEqualTo(expectedSum);
         verify(orderRepository, times(1)).findById(orderId);
+    }
+
+    @Test
+    public void OrderService_FindActiveOrder_ReturnsFirstActiveOrder() {
+        User user = User.builder().id(1L).build();
+        Order order1 = Order.builder()
+                .id(1L)
+                .user(user)
+                .products(new ArrayList<Product>())
+                .isActive(true)
+                .build();
+        Order order2 = Order.builder()
+                .id(2L)
+                .user(user)
+                .products(new ArrayList<Product>())
+                .isActive(true)
+                .build();
+        List<Order> orderList = new ArrayList<>();
+        orderList.add(order1);
+        orderList.add(order2);
+        user.setOrders(orderList);
+
+        when(orderRepository.findAll()).thenReturn(orderList);
+
+        Optional<OrderDto> activeOrder = orderService.findActiveOrder(user.getId());
+
+        verify(orderRepository, times(1)).findAll();
+        Assertions.assertThat(activeOrder).isNotNull();
+        Assertions.assertThat(activeOrder.get().getId()).isEqualTo(order1.getId());
+        Assertions.assertThat(activeOrder.get().getIsActive()).isTrue();
+    }
+
+    @Test
+    public void OrderService_CreateOrderWithUserId_ReturnsOrderDto() {
+        User user = User.builder()
+                .id(1L)
+                .orders(new ArrayList<>())
+                .build();
+        Order order = Order.builder()
+                .isActive(true)
+                .user(user)
+                .products(new ArrayList<>())
+                .build();
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(orderRepository.save(Mockito.any(Order.class))).thenReturn(order);
+
+        OrderDto createdOrder = orderService.createOrderWithUserId(user.getId());
+
+        verify(orderRepository, times(1)).save(order);
+        verify(userRepository, times(1)).findById(user.getId());
+        Assertions.assertThat(createdOrder.getUser()).isEqualTo(new UserDto(user));
     }
 }
