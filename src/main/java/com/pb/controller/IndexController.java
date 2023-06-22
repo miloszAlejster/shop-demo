@@ -132,10 +132,4 @@ public class IndexController {
         return "products";
 
     }
-
-    @GetMapping("/sendmail")
-    public String sendMail() {
-        mailService.sendMail("shop.email.sender@gmail.com", "Test", "Massage Test");
-        return "redirect:/";
-    }
 }

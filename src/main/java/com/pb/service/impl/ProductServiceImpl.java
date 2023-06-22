@@ -58,9 +58,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateProduct(ProductDto productDto) {
-//        Product product = mapToProduct(productDto);
-//        productRepository.save(product);
-
         Optional<Product> optionalProduct = productRepository.findById(productDto.getId());
         if (optionalProduct.isPresent()) {
             logger.info("Product with id: " + productDto.getId() + " found.");
@@ -78,9 +75,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateProductName(Long id, String newName) {
-//        Product product = productRepository.findById(id).get();
-//        product.setName(newName);
-//        productRepository.save(product);
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isPresent()) {
             logger.info("Product with id: " + id + " found.");
@@ -96,9 +90,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateProductDescription(Long id, String newDescription) {
-//        Product product = productRepository.findById(id).get();
-//        product.setDescription(newDescription);
-//        productRepository.save(product);
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isPresent()) {
             logger.info("Product with id: " + id + " found.");
@@ -114,9 +105,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateProductPrice(Long id, Double newPrice) {
-//        Product product = productRepository.findById(id).get();
-//        product.setPrice(newPrice);
-//        productRepository.save(product);
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isPresent()) {
             logger.info("Product with id: " + id + " found.");
@@ -132,9 +120,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateProductOrders(Long id, Set<Order> newOrders) {
-//        Product product = productRepository.findById(id).get();
-//        product.setOrders(newOrders);
-//        productRepository.save(product);
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isPresent()) {
             logger.info("Product with id: " + id + " found.");
@@ -147,26 +132,4 @@ public class ProductServiceImpl implements ProductService {
             logger.error("Product with id: " + id + " not found.");
         }
     }
-
-//    private ProductDto mapToProductDto(Product product) {
-//        ProductDto productDto = ProductDto.builder()
-//                .id(product.getId())
-//                .name(product.getName())
-//                .description(product.getDescription())
-//                .price(product.getPrice())
-//                .orders(product.getOrders())
-//                .build();
-//        return productDto;
-//    }
-//
-//    private Product mapToProduct(ProductDto productDto) {
-//        Product product = Product.builder()
-//                .id(productDto.getId())
-//                .name(productDto.getName())
-//                .description(productDto.getDescription())
-//                .price(productDto.getPrice())
-//                .orders(productDto.getOrders())
-//                .build();
-//        return product;
-//    }
 }
