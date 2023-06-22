@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
+
 @Import(SecurityConfig.class)
 @WebMvcTest(IndexController.class)
 public class IndexControllerTest {
@@ -46,7 +48,7 @@ public class IndexControllerTest {
     private OrderRepository orderRepository;
 
     @Test
-    public void IndexController_home_NotLoggedInUser() throws Exception {
+    public void IndexController_home() throws Exception {
         this.mockMvc
                 .perform(MockMvcRequestBuilders.get("/"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -89,5 +91,37 @@ public class IndexControllerTest {
                 .andExpect(MockMvcResultMatchers.model().attribute("currentUserEmail", "anonymousUser"))
                 .andExpect(MockMvcResultMatchers.model().attribute("currentRole", "[ROLE_ANONYMOUS]"))
                 .andExpect(MockMvcResultMatchers.model().attribute("user", new User()));
+    }
+
+    @Test
+    public void IndexController_adminDashboard_NotLoggedInUser_RedirectsToLogin() throws Exception {
+        this.mockMvc
+                .perform(MockMvcRequestBuilders.get("/admin"))
+                .andExpect(MockMvcResultMatchers.status().is(302))
+                .andExpect(MockMvcResultMatchers.redirectedUrl("http://localhost/login"));
+    }
+
+    @Test
+    public void IndexController_my_orders_NotLoggedInUser_RedirectsToLogin() throws Exception {
+        this.mockMvc
+                .perform(MockMvcRequestBuilders.get("/my-orders"))
+                .andExpect(MockMvcResultMatchers.status().is(302))
+                .andExpect(MockMvcResultMatchers.redirectedUrl("http://localhost/login"));
+    }
+
+    @Test
+    public void IndexController_products() throws Exception {
+        this.mockMvc
+                .perform(MockMvcRequestBuilders.get("/products"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("products"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("title"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("currentUserEmail"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("currentRole"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("products"))
+                .andExpect(MockMvcResultMatchers.model().attribute("title", "Shop - Products"))
+                .andExpect(MockMvcResultMatchers.model().attribute("currentUserEmail", "anonymousUser"))
+                .andExpect(MockMvcResultMatchers.model().attribute("currentRole", "[ROLE_ANONYMOUS]"))
+                .andExpect(MockMvcResultMatchers.model().attribute("products", new ArrayList<>()));
     }
 }
