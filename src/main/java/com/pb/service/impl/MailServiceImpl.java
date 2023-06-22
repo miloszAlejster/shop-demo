@@ -8,22 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service(value = "MailService")
 public class MailServiceImpl implements MailService {
-
-    Logger logger = LoggerFactory.getLogger(IndexController.class);
     private Environment environment;
-
-    @Autowired
     private JavaMailSender javaMailSender;
+    Logger logger = LoggerFactory.getLogger(IndexController.class);
 
     @Autowired
-    public MailServiceImpl(Environment env) {
+    public MailServiceImpl(Environment env, JavaMailSender javaMailSender) {
         this.environment = env;
+        this.javaMailSender = javaMailSender;
     }
 
+    @Async
     @Override
     public void sendMail(String mailAddress, String title, String mailMessage) {
         logger.info(this.getClass().getName() + ": Sending email start.");
@@ -35,7 +35,6 @@ public class MailServiceImpl implements MailService {
         message.setText(mailMessage);
 
         javaMailSender.send(message);
-
         logger.info(this.getClass().getName() + ": Sending email end.");
     }
 }

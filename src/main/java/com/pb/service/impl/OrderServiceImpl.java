@@ -106,24 +106,6 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
     }
 
-//    @Override
-//    public void updateOrder(OrderDto orderDto) {
-////        Order order = maptoOrder(orderDto);
-////        orderRepository.save(order);
-//        Optional<Order> optionalOrder = orderRepository.findById(orderDto.getId());
-//        if (optionalOrder.isPresent()) {
-//            logger.info("Order with id: " + orderDto.getId() + " found.");
-//            Order order = optionalOrder.get();
-//            order.setProducts(orderDto.getProducts());
-//            order.setUser();
-//            orderRepository.save(order);
-//            logger.info("Order with id: " + orderDto.getId() + " updated.");
-//        }
-//        else {
-//            logger.error("Order with id: " + orderDto.getId() + " not found.");
-//        }
-//    }
-
     @Override
     public void addProductToOrder(Long orderId, Long productId) {
         Optional<Product> optionalProduct = productRepository.findById(productId);
@@ -167,34 +149,15 @@ public class OrderServiceImpl implements OrderService {
         return activeOrder;
     }
 
-//    private OrderDto mapToOrderDto(Order order) {
-//        OrderDto orderDto = OrderDto.builder()
-//                .id(order.getId())
-//                .user(order.getUser())
-//                .isActive(order.getIsActive())
-//                .products(order.getProducts())
-//                .build();
-//        return orderDto;
-//    }
-//
-//    private Order maptoOrder(OrderDto orderDto) {
-//        Order order = Order.builder()
-//                .id(orderDto.getId())
-//                .user(orderDto.getUser())
-//                .isActive(orderDto.getIsActive())
-//                .products(orderDto.getProducts())
-//                .build();
-//        return order;
-//    }
-//
-//    private Product mapToProduct(ProductDto productDto) {
-//        Product product = Product.builder()
-//                .id(productDto.getId())
-//                .name(productDto.getName())
-//                .description(productDto.getDescription())
-//                .price(productDto.getPrice())
-//                .orders(productDto.getOrders())
-//                .build();
-//        return product;
-//    }
+    @Override
+    public String getOrderDetailsString(OrderDto orderDto) {
+        List<ProductDto> products = orderDto.getProducts();
+        String out = "Thank You for placing order\nYour order id is: " + orderDto.getId().toString() + "\nOrders products:\n";
+        for(ProductDto productDto : products) {
+            out += productDto.getName() + "  ";
+        }
+        out += "\nTotal price: " + getOrderSum(orderDto.getId()) + " $";
+        out += "\nWe hope to see You again";
+        return out;
+    }
 }

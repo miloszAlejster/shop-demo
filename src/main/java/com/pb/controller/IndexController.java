@@ -79,12 +79,12 @@ public class IndexController {
         return "register";
     }
 
-
     @GetMapping("/admin")
     String adminDashboard(Model model) {
         model.addAttribute("title", "Shop - Admin");
         return "admin-dashboard";
     }
+
     @GetMapping("/my-orders")
     public String my_orders(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         model.addAttribute("title", "Shop - My orders");
@@ -93,13 +93,17 @@ public class IndexController {
         if(activeOptionalUser.isPresent()) {
             userDto = activeOptionalUser.get();
         }
-        List<OrderDto> orders = orderService.findAllUsersOrders(userDto.getId());
-        model.addAttribute("orders", orders);
+        List<OrderDto> unfilteredOrders = orderService.findAllUsersOrders(userDto.getId());
+        List<OrderDto> orders = new ArrayList<>();
         List<Double> sums = new ArrayList<>();
-        for (OrderDto orderDto : orders) {
+        for (OrderDto orderDto : unfilteredOrders) {
             Double totalPrice = orderService.getOrderSum(orderDto.getId());
             sums.add(totalPrice);
+            if(!orderDto.getIsActive()) {
+                orders.add(orderDto);
+            }
         }
+        model.addAttribute("orders", orders);
         model.addAttribute("sums", sums);
         return "my_orders";
     }
@@ -131,11 +135,5 @@ public class IndexController {
         model.addAttribute("products", products);
         return "products";
 
-    }
-
-    @GetMapping("/sendmail")
-    public String sendMail() {
-        mailService.sendMail("shop.email.sender@gmail.com", "Test", "Massage Test");
-        return "redirect:/";
     }
 }

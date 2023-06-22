@@ -3,7 +3,7 @@ package com.pb.controller;
 import com.pb.dto.OrderDto;
 import com.pb.dto.UserDto;
 import com.pb.model.Order;
-import com.pb.model.User;
+import com.pb.service.MailService;
 import com.pb.service.OrderService;
 import com.pb.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,10 +20,12 @@ import java.util.Optional;
 public class OrderController {
     private final OrderService orderService;
     private final UserService userService;
+    private final MailService mailService;
 
-    public OrderController(OrderService orderService, UserService userService) {
+    public OrderController(OrderService orderService, UserService userService, MailService mailService) {
         this.orderService = orderService;
         this.userService = userService;
+        this.mailService = mailService;
     }
 
     @PostMapping("/create")
@@ -63,9 +65,15 @@ public class OrderController {
     }
     @PostMapping("/orderCart")
     @ResponseStatus(value = HttpStatus.OK)
-    void orderCart(@RequestParam("orderId") Long orderId) {
+    void orderCart(@RequestParam("orderId") Long orderId,
+                   @AuthenticationPrincipal UserDetails userDetails) {
+        Optional<UserDto> activeUser = userService.findByEmail(userDetails.getUsername());
+        Optional<OrderDto> activeOrder = orderService.findActiveOrder(activeUser.get().getId());
+        if(activeOrder.get().getProducts().isEmpty()) return;
+        mailService.sendMail(
+                activeUser.get().getEmail(),
+                "Shop - You have send order",
+                orderService.getOrderDetailsString(activeOrder.get()));
         orderService.setOrderInactive(orderId);
-        //TODO: email sender here
-        //TODO: prevent empty order
     }
 }
